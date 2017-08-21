@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">金雀好钢</string>
+    <array name="tab_title">
+        <item>全部</item>
+        <item>待付款</item>
+        <item>生产中</item>
+        <item>待收货</item>
+        <item>待评价</item>
+    </array>
+
+    <!-- 我的 -> 收货地址  -->
+    <string name="person_consignee_name">收货人:</string>
+    <string name="person_consignee_name_hit">请输入收货人姓名</string>
+    <string name="person_consignee_phone">手机号码:</string>
+    <string name="person_consignee_phone_hit">请输入手机号码</string>
+    <string name="person_consignee_district">所在地区:</string>
+    <string name="person_consignee_district_hit">选择所在地区</string>
+    <string name="person_consignee_street">详细地址:</string>
+    <string name="person_consignee_street_hit">输入详细地址:</string>
+    <string name="person_consignee_default">设置为默认收货地址</string>
+    <string name="address_add">新建地址</string>
+</resources>

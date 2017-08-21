@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hongaer.shoppingmall2.user.view.Position2Activity">
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/ib_goods_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/top_bar_left_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="设置"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <View
+
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="#11000000" />
+
+
+    <RelativeLayout
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_alignParentLeft="true"
+            android:padding="8dp"
+            android:text="消息推送"
+            android:textColor="#000000"
+            android:textSize="16dp" />　
+
+        <ToggleButton
+            android:id="@+id/bt_push1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_butn_toggle"
+            android:checked="true"
+            android:text=""
+            android:textOff=""
+            android:textOn="" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="8dp"
+        android:background="#11000000" />
+
+
+    <TextView
+        android:id="@+id/tv_flesh"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:drawablePadding="260dp"
+        android:drawableRight="@drawable/home_arrow_right"
+        android:padding="10dp"
+        android:text="清除缓存"
+        android:textColor="#000000"
+        android:textSize="17dp" />　
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="10dp"
+        android:background="#11000000" />
+
+    <TextView
+        android:id="@+id/tv_drawback"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:drawablePadding="260dp"
+        android:drawableRight="@drawable/home_arrow_right"
+        android:padding="10dp"
+        android:text="意见反馈"
+        android:textColor="#000000"
+        android:textSize="17dp" />　
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#11000000" />
+
+    <TextView
+        android:id="@+id/tv_shaerapp"
+        android:layout_width="wrap_content"
+        android:layout_height="39dp"
+        android:layout_alignParentLeft="true"
+        android:drawablePadding="295dp"
+        android:drawableRight="@drawable/home_arrow_right"
+        android:padding="9dp"
+        android:text="分享"
+        android:textColor="#000000"
+        android:textSize="16dp" />　
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="7dp"
+        android:background="#11000000" />
+
+    <TextView
+        android:id="@+id/tv_for_us"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:drawablePadding="260dp"
+        android:drawableRight="@drawable/home_arrow_right"
+        android:padding="10dp"
+        android:text="关于我们"
+        android:textColor="#000000"
+        android:textSize="17dp" />　
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginBottom="24dp"
+        android:background="#11000000" />
+
+
+</LinearLayout>
+
+</RelativeLayout>
