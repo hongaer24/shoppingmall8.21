@@ -142,21 +142,22 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                     break;
                 }
                 case JSON_FLAG:
-                    // List<GoodsBean> goodsBeanList= (List<GoodsBean>) msg.obj;
+
                     showData();
                    // initData();
                     break;
-                //default:
+
 
             }
         }
 
         ;
     };
-
-    public void initData() {
-        super.initData();
-
+         @Override
+         public void initData() {
+             //super.initData();
+           /*  checkData();*/
+          //showData();
         Log.e("6666", "请求数据成功=======888888" );
         String reg_url = Constans.SHOPPINGCART_URL;
         // final String token="90498ceb48917654d7116c2a9b8198fb";
@@ -241,7 +242,17 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
         }
     }
-
+    private void checkData() {
+        List<GoodsBean> goodsBeanList = CartStorage.getInstance().getAllData();
+        if ( goodsBeanList!= null && goodsBeanList.size() > 0) {
+             llCheckAll.setVisibility(View.VISIBLE);
+            ll_empty_shopcart.setVisibility(View.GONE);
+        } else {
+            emptyShoppingCart();
+           /* ll_empty_shopcart.setVisibility(View.VISIBLE);
+            tvShopcartEdit.setVisibility(View.GONE);*/
+        }
+    }
 
     public void onClick(View v) {
 
@@ -253,11 +264,13 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         } else if (v == btnDelete) {
             //removeHttp();
             adapter.removeHttp();
+               showData();
             //adapter.deleteData();
             //adapter.checkAll();
-            if (adapter.getItemCount() == 0) {
+             //checkData();
+         /*   if (adapter.getItemCount() == 0) {
                 emptyShoppingCart();
-            }
+            }*/
             // Handle clicks for btnDelete
         } else if (v == btnCollection) {
             // Handle clicks for btnCollection
@@ -362,7 +375,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
         initData();
-       // showData();
+        showData();
         hideDelete();
     }
 
@@ -371,6 +384,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         ll_empty_shopcart.setVisibility(View.VISIBLE);
         tvShopcartEdit.setVisibility(View.GONE);
         llDelete.setVisibility(View.GONE);
+        llCheckAll.setVisibility(View.GONE);
     }
 
     // 商户PID
