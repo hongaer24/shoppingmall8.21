@@ -82,8 +82,8 @@ public class PositionActivity extends AppCompatActivity {
             case R.id.tv_IDsafe:
                // showPopwindow();
                 //CartStorage.getInstance().addData(goodsBean);
-               /* Intent intent1=new Intent(PositionActivity.this,IDSafeActivity.class);
-                startActivity(intent1);*/
+                Intent intent1=new Intent(PositionActivity.this,IDSafeActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.bt_loingback:
                 CacheUtils.deleteString(MyApplication.getContex());

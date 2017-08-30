@@ -65,8 +65,8 @@ public class ResultDataBean {
 
         public void setSeckill_info(SeckillInfoBean seckill_info) {
             this.seckill_info = seckill_info;
-        }
 
+    }
         public List<ActInfoBean> getAct_info() {
             return act_info;
         }

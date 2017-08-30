@@ -42,9 +42,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="tencent1106221777" />
+                <data android:scheme="tencent101417189" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -71,7 +78,8 @@
         <activity android:name=".user.view.Position2Activity" />
         <activity android:name=".user.view.address.AddressActivity" />
         <activity android:name=".user.view.address.AddressListActivity" />
-        <activity android:name=".user.view.address.AddressEditActivity"></activity>
+        <activity android:name=".user.view.address.AddressEditActivity" />
+        <activity android:name=".user.view.FindPasswordActivity"></activity>
     </application>
 
 </manifest>

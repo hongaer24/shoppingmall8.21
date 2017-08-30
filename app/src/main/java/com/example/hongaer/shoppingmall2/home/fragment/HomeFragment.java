@@ -13,16 +13,22 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
-import com.example.hongaer.shoppingmall2.home.adapter.HomeFragmentAdapter;
+import com.example.hongaer.shoppingmall2.home.bean.DatasBean;
 import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
 import com.example.hongaer.shoppingmall2.home.bean.ResultDataBean;
 import com.example.hongaer.shoppingmall2.user.view.PositionActivity;
 import com.example.hongaer.shoppingmall2.utils.Constans;
-import com.example.hongaer.shoppingmall2.utils.Http;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by hongaer on 2017/7/1.
@@ -36,12 +42,14 @@ public class HomeFragment extends BaseFragment {
     private TextView tv_search_home;
     private TextView tv_message_home;
     private ResultDataBean.ResultBean resultbean;
-    private HomeFragmentAdapter adapter;
+    //private HomeFragmentAdapter adapter;
     private WebView webview;
     //public String url = Constans.HOME_URLS;
-    public String url = Constans.HOME_URLS;
+    public String url = Constans.SHOPPINGCART_URL;
     private CharSequence response;
     OkHttpClient okHttpClient = new OkHttpClient();
+    private List<DatasBean.DataBean> bean;
+    private  List<GoodsBean> goodsBeanList;
 
 
     @Override
@@ -119,13 +127,35 @@ public class HomeFragment extends BaseFragment {
     public void initData()  {
         super.initData();
         Log.e(TAG, "http主页数据被初始化了");
-        new Thread(new Runnable() {
+        String reg_url = Constans.SHOPPINGCART_URL;
+         final String token="90498ceb48917654d7116c2a9b8198fb";
+        // final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+        OkHttpClient okHttpClient = new OkHttpClient();
+        FormBody body = new FormBody.Builder().add("token",token).build();
+        Request request = new Request.Builder().url(reg_url).post(body).build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                              if(response.isSuccessful()){
+                                  String json=response.body().string();
+                                 // Log.i("tag5655555","请求数据成功======="+json);
+                                 // Log.i("token66","请求数据成功======="+token);
+                                  //processData(json);
+                              }
+            }
+        });
+       /* new Thread(new Runnable() {
             @Override
             public void run() {
                 String json= null;
                 try {
                     json = Http.get(url);
-                    processData(json);
+                  //  processData(json);
                    // Log.e(TAG,"解析成功===="+ resultbean);
                 } catch (IOException e) {
 
@@ -136,7 +166,7 @@ public class HomeFragment extends BaseFragment {
 
             }
         }).start();
-
+*/
 
         }
 
@@ -196,14 +226,13 @@ public class HomeFragment extends BaseFragment {
 
      /*   return url;*/
 
-    private void processData(String json) {
-      ResultDataBean  resultDataBean= JSON.parseObject(json,ResultDataBean.class);
+      //ResultDataBean  resultDataBean= JSON.parseObject(json,ResultDataBean.class);
             // Log.e(TAG,"解析成功====="+datasBean);
-            resultbean= resultDataBean.getResult();
-            /* DatasBean.DataBean dataBean =JSON.parseObject(json, DatasBean.DataBean.class);
-                  Log.i("databean","========"+dataBean);*/
+           // resultbean= resultDataBean.getResult();
+
+                  //Log.i("databean","========"+bean.get(0).getSell_price());
        // Log.e(TAG,"解析成功===="+ resultbean.getBanner_info().get(1).getImage());
-        if (resultbean != null) {
+       /* if (resultbean != null) {
             adapter = new HomeFragmentAdapter(mContext, resultbean);
             GoodsBean goodsBean=new GoodsBean();
             ResultDataBean.ResultBean.RecommendInfoBean  recommendInfoBean= (ResultDataBean.ResultBean.RecommendInfoBean) resultbean.getRecommend_info().get(1);
@@ -211,7 +240,28 @@ public class HomeFragment extends BaseFragment {
             goodsBean.setCover_price( recommendInfoBean.getCover_price());
             goodsBean.setFigure( recommendInfoBean.getFigure());
             goodsBean.setProduct_id( recommendInfoBean.getProduct_id());
-            startGoodsInfoActivity(goodsBean);
+            startGoodsInfoActivity(goodsBean);*/
+           // adapter = new HomeFragmentAdapter(mContext,bean);
+
+    private void processData(String json) {
+        DatasBean dataBean = JSON.parseObject(json, DatasBean.class);
+        bean = dataBean.getData();
+        GoodsBean goodsBean = new GoodsBean();
+        List<GoodsBean> goodsBeanList=new ArrayList<>();
+        if (bean != null) {
+            for (int i = 0; i < goodsBeanList.size(); i++) {
+
+                DatasBean.DataBean datasbean = bean.get(i);
+                goodsBean.setName(datasbean.getName());
+                goodsBean.setCover_price(datasbean.getSell_price());
+                goodsBean.setFigure(datasbean.getImg());
+                goodsBean.setGoods_id(datasbean.getId());
+                goodsBeanList.add(goodsBean);
+
+            }
+               startGoodsInfoActivity(goodsBean);
+        }
+    }
            // rvHome.setAdapter(adapter);
             //rvHome.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
             //GridLayoutManager manager = new GridLayoutManager(getActivity(), 1);
@@ -230,11 +280,11 @@ public class HomeFragment extends BaseFragment {
             });*/
                       //设置网格布局
            // rvHome.setLayoutManager(manager);
-         }
+
 
        //  else{}
 
-    }
+
     private void startGoodsInfoActivity(GoodsBean goodsBean) {
         Intent intent=new Intent(mContext, PositionActivity.class);
         intent.putExtra(GOODS_BEAN,goodsBean);

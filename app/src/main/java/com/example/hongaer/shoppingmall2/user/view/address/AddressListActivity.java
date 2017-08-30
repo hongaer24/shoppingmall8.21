@@ -39,19 +39,20 @@ public class AddressListActivity extends AppCompatActivity implements  SPAddress
     //SPConsigneeAddressBean selectConsignee;
     private DialogFragment mLoadingDialog;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_address_list);
-        ButterKnife.bind(this);
-        initData();
-    }
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_address_list);
+            ButterKnife.bind(this);
+            initData();
+        }
     public void onResume() {
         super.onResume();
         initData();
 
     }
     public void initData() {
+
         spConsigneeAddressBeanList= AddressStorage.getInstance().getAllData();
         mAdapter = new SPAddressListAdapter(this, this,spConsigneeAddressBeanList);
        addressListv.setAdapter(mAdapter);
@@ -99,38 +100,32 @@ public class AddressListActivity extends AppCompatActivity implements  SPAddress
     }
     @Override
     public void onItemDelete(final SPConsigneeAddressBean consignee) {
-       /* if (goodsBeanList != null && goodsBeanList.size() > 0) {
-            for (int i = 0; i < goodsBeanList.size(); i++) {
-                  goodsBean=goodsBeanList.get(i);
-                //内存中删除
-                  goodsBeanList.remove(goodsBean);*/
-                //在本地中保存
-         // spConsigneeAddressBeanList= AddressStorage.getInstance().getAllData();
-                                    //AddressStorage.getInstance().updataData(consignee);
+           AddressStorage.getInstance().deleteData(consignee);
+             // mAdapter.notifyDataSetChanged();
+              initData();
 
-                //刷新
-             /*  addressListv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+              /*  //刷新
+               addressListv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                    @Override
                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 spConsigneeAddressBeanList.remove(position);
-                                  mAdapter.notifyDataSetChanged();
+                                mAdapter.setData(spConsigneeAddressBeanList);
+
                    }
                });*/
-       // AddressStorage.getInstance().deleteData(consignee);
+                //  refreshData();
+
 
             }
 
+    private void refreshData() {
 
-
+    }
 
     @Override
     public void onItemSetDefault(SPConsigneeAddressBean consignee) {
 
     }
-   /* public void onItemDelete(SPConsigneeAddressBean consigneeAddress) {
-        selectConsignee = consigneeAddress;
-        showConfirmDialog("确定删除该地址吗" , "删除提醒" , this , 1 );
-    }*/
 
     @OnClick({R.id.ib_goods_back,R.id.address_list_pcl, R.id.add_address_btn})
     public void onClick(View view) {

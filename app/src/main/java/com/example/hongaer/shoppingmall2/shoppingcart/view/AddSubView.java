@@ -4,12 +4,22 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.hongaer.shoppingmall2.R;
+import com.example.hongaer.shoppingmall2.app.MyApplication;
+import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
+import com.example.hongaer.shoppingmall2.shoppingcart.utils.CartStorage;
+import com.example.hongaer.shoppingmall2.utils.CacheUtils;
+import com.example.hongaer.shoppingmall2.utils.Constans;
+import com.example.hongaer.shoppingmall2.utils.Http;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by hongaer on 2017/7/8.
@@ -23,6 +33,8 @@ public class AddSubView extends LinearLayout implements View.OnClickListener {
     private int value = 1;
     private int minValue = 1;
     private int maxValue = 10;
+    private List<GoodsBean> datas;
+
     public AddSubView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.mContext=context;
@@ -39,18 +51,23 @@ public class AddSubView extends LinearLayout implements View.OnClickListener {
         btn_sub.setOnClickListener(this);
     }
     public void onClick(View v) {
+        datas=  CartStorage.getInstance().getAllData();
          switch (v.getId()){
              case R.id.btn_add:
+                 addPostHttp();
                  addNumber();
                 break;
 
              case  R.id.btn_sub:
+                subPostHttp();
                  subNumber();
                  break;
          }
      //   Toast.makeText(mContext,"当前商品数目=="+value,Toast.LENGTH_SHORT).show();
 
     }
+
+
 
     private void subNumber() {
         if (value > minValue) {
@@ -109,5 +126,50 @@ public class AddSubView extends LinearLayout implements View.OnClickListener {
     public  void  setOnNumberChangeListener(OnNumberChangeListener onNumberChangeListener){
         this.onNumberChangeListener=onNumberChangeListener;
     }
+    private void addPostHttp() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               /// Log.i("加入购物车", "请求数据成功=======" + datas);
+                final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+                String id = String.valueOf(datas.get(0).getGoods_id());
+               // Log.i("加入购物车id", "请求数据成功=======" + id);
+                String number = String.valueOf(1);
+               // Log.i("加入购物车num", "请求数据成功=======" + number);
+                String type = datas.get(0).getType();
+                String url = Constans.JOIN_CART_URL;
+                try {
+                    String json=  Http.post4(id,type,number,token,url);
+                    Log.i("加入购物车", "请求数据成功=======" + json);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
+            }
+        }).start();
+
+    }
+    private void subPostHttp() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                /// Log.i("加入购物车", "请求数据成功=======" + datas);
+                final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+                String id = String.valueOf(datas.get(0).getGoods_id());
+                // Log.i("加入购物车id", "请求数据成功=======" + id);
+                String number = String.valueOf(-1);
+                // Log.i("加入购物车num", "请求数据成功=======" + number);
+                String type = datas.get(0).getType();
+                String url = Constans.JOIN_CART_URL;
+                try {
+                    String json=  Http.post4(id,type,number,token,url);
+                    Log.i("加入购物车", "请求数据成功=======" + json);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+    }
 }

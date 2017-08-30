@@ -29,8 +29,15 @@ public class MyApplication extends Application {
         */
 
         initOkhttpClient();
+       // registToWX();
 
     }
+   /* private void registToWX() {
+        //AppConst.WEIXIN.APP_ID是指你应用在微信开放平台上的AppID，记得替换。
+        mWxApi = WXAPIFactory.createWXAPI(this, AppConst.WEIXIN.APP_ID, false);
+        // 将该app注册到微信
+        mWxApi.registerApp(AppConst.WEIXIN.APP_ID);
+    }*/
 
     private void initOkhttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()

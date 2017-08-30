@@ -122,7 +122,7 @@ public class AddressActivity extends AppCompatActivity {
             return false;
         }
         consignee.setConsignee(etReceived.getText().toString());
-       //
+
         if (TextUtils.isEmpty(etPhone.getText().toString())) {
             showToast("请输入联系方式");
             return false;
@@ -163,21 +163,6 @@ public class AddressActivity extends AppCompatActivity {
             }
         }
     };
-    //etPhone= (EditText) findViewById(R.id.et_phone);
-
-    // etArea = (EditText) findViewById(R.id.et_area);
-
-     /*   mTextViewAddress = (TextView) findViewById(R.id.tv_address);*/
-
-    //  获取json数据
-       /* String province_data_json = JsonFileReader.getJson(this, "province_data.json");*/
-    //  解析json数据
-
-    //parseJson(province_data_json);
-    //设置三级联动效果
-    //设置选择的三级单位
-    // pvOptions.setLabels("省", "市", "区");
-    // pvOptions.setTitle("选择城市");
 
 
     private void showPickerView() {
@@ -247,17 +232,6 @@ public class AddressActivity extends AppCompatActivity {
                 .build();
         pvOption.setPicker(provinceBeanList, cityList, districtList);
     }
-
-    // }
-
-     /*   //  点击弹出选项选择器
-        mTextViewAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pvOptions.show()
-            }
-        });*/
-
 
     private void getHttp() {
         new Thread(new Runnable() {
@@ -367,29 +341,6 @@ public class AddressActivity extends AppCompatActivity {
     public void showToast(String msg) {
         SPDialogUtils.showToast(this, msg);
     }
-
-    // }
-
-
-    //}
-
-
-
-/*
-
-          cities = new ArrayList<>();//   声明存放城市的集合
-          districts = new ArrayList<>();
-*/
-
-
-          /*Iterator<String> it = keyset.iterator();
-          while(it.hasNext()){
-              String key = it.next();
-              String value= (String) map.get(key);
-              Log.i("key值为====="+key,"value值为====="+value);
-
-          }
-*/
 
 
     //  解析json填充集合

@@ -176,6 +176,8 @@ public class UserFragment extends BaseFragment {
                 startActivity(intent);
                 break;
             case R.id.tv_position:
+               /* Intent intent8 = new Intent(mContext, ResetPasswordActivity.class);
+                startActivity(intent8);*/
                 if(!username.isEmpty()){
                     Intent intent7 = new Intent(mContext, PositionActivity.class);
                      startActivity(intent7);
@@ -183,7 +185,6 @@ public class UserFragment extends BaseFragment {
                     Intent intent7 = new Intent(mContext, Position2Activity.class);
                     startActivity(intent7);
                 }
-
                 Toast.makeText(mContext, "设置", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_address:

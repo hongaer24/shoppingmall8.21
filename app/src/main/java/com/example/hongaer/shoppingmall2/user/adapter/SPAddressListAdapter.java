@@ -28,6 +28,12 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
         this.mAddressListListener = addressListListener;
         this.datas = spConsigneeAddressBeanList;
     }
+    public void setData(List<SPConsigneeAddressBean> consignees){
+        if(consignees == null)return;
+        this.datas = consignees;
+        this.notifyDataSetChanged();
+    }
+
 
     @Override
     public int getCount() {
@@ -101,11 +107,9 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
 
         switch (v.getId()){
             case R.id.address_delete_btn:
-                AddressStorage.getInstance().deleteData(consignee);
+
                 if (mAddressListListener!= null)
                     mAddressListListener.onItemDelete( consignee);
-
-
                 break;
             case R.id.address_edit_btn:
                 if (mAddressListListener!=null)mAddressListListener.onItemEdit( consignee);

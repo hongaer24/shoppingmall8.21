@@ -74,7 +74,7 @@ public class CartStorage {
     public void addData(GoodsBean goodsBean) {
         //1.添加到内存中 SparseArray
        // Log.i("110110","空指针的地方=="+goodsBean);
-       GoodsBean tempData = sparseArray.get(Integer.parseInt(goodsBean.getProduct_id()));
+       GoodsBean tempData = sparseArray.get((goodsBean.getGoods_id()));
        // GoodsBean tempData = sparseArray.get(Integer.parseInt(goodsBean.getMobile()));
         if (tempData != null) {
            // 内存中有了这条数据
@@ -85,7 +85,7 @@ public class CartStorage {
 
         }
         //同步到内存中
-        sparseArray.put(Integer.parseInt(tempData.getProduct_id()), tempData);
+        sparseArray.put((tempData.getGoods_id()), tempData);
         //sparseArray.put(Integer.parseInt(tempData.getMobile()), tempData);
 
         //2.同步到本地
@@ -94,7 +94,7 @@ public class CartStorage {
     //删除数据
     public void deleteData(GoodsBean  goodsBean) {
         //1.从内存中删除
-      sparseArray.delete(Integer.parseInt( goodsBean.getProduct_id()));
+      sparseArray.delete(( goodsBean.getGoods_id()));
        // sparseArray.delete(Integer.parseInt( goodsBean.getMobile()));
         //2.把内存数据保存到本地
         saveLocal();
@@ -102,7 +102,7 @@ public class CartStorage {
     //修改数据
     public void updataData(GoodsBean goodsBean) {
 
-      sparseArray.put(Integer.parseInt( goodsBean.getProduct_id()), goodsBean);
+      sparseArray.put(( goodsBean.getGoods_id()), goodsBean);
        saveLocal();
     }
 

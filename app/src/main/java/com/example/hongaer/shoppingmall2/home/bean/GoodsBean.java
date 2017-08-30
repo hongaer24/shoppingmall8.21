@@ -11,7 +11,52 @@ public class GoodsBean implements Serializable {
     private String cover_price;
     private String figure;
     private String product_id;
-    private int number=1;
+    private int number = 1;
+    private int goods_id;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    private String type;
+
+    private boolean isSelected ;
+
+    //电话
+    String mobile;
+
+    //收货人姓名
+    String consignee;
+
+
+    //是否默认地址
+    String isDefault;
+
+    String fullAddress;
+
+    String addressID;
+    //详细地址
+    String address;
+
+
+    public String getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+    public int getGoods_id() {
+        return goods_id;
+    }
+
+    public void setGoods_id(int goods_id) {
+        this.goods_id = goods_id;
+    }
 
     public String getConsignee() {
         return consignee;
@@ -28,22 +73,6 @@ public class GoodsBean implements Serializable {
     public void setAddressID(String addressID) {
         this.addressID = addressID;
     }
-
-    String addressID;
-    //详细地址
-    String address;
-
-    //电话
-    String mobile;
-
-    //收货人姓名
-    String consignee;
-
-
-    //是否默认地址
-    String isDefault;
-
-    String fullAddress;
 
 
     public String getAddress() {
@@ -84,10 +113,10 @@ public class GoodsBean implements Serializable {
     }
 
     public void setSelected(boolean selected) {
-        isSelected = selected;
+       this.isSelected = selected;
     }
 
-    private boolean isSelected =true;
+
 
     public int getNumber() {
         return number;
@@ -96,7 +125,6 @@ public class GoodsBean implements Serializable {
     public void setNumber(int number) {
         this.number = number;
     }
-
 
 
     public String getName() {
@@ -123,14 +151,6 @@ public class GoodsBean implements Serializable {
         this.figure = figure;
     }
 
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
     @Override
     public String toString() {
         return "GoodsBean{" +
@@ -139,12 +159,14 @@ public class GoodsBean implements Serializable {
                 ", figure='" + figure + '\'' +
                 ", product_id='" + product_id + '\'' +
                 ", number=" + number +
-                ", addressID='" + addressID + '\'' +
-                ", address='" + address + '\'' +
+                ", goods_id=" + goods_id +
+                ", type='" + type + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", consignee='" + consignee + '\'' +
                 ", isDefault='" + isDefault + '\'' +
                 ", fullAddress='" + fullAddress + '\'' +
+                ", addressID='" + addressID + '\'' +
+                ", address='" + address + '\'' +
                 ", isSelected=" + isSelected +
                 '}';
     }

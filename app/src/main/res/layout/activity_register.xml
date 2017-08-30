@@ -126,17 +126,6 @@
              android:clickable="true"
              android:text="已有账号！立即登录"
              android:textColor="#4c44ed" />
-
-
-
-
-
-
-
-
-
-
-
      </LinearLayout>
 
 </LinearLayout>

@@ -26,8 +26,27 @@ public class LoginBean {
     private String telephone;
     private String mobile;
     private String qq;
+
+    public String getAccess_token() {
+        return access_token;
+    }
+
+    public void setAccess_token(String access_token) {
+        this.access_token = access_token;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     private String sex;
     private String email;
+    private String access_token;
+    private String message;
 
     public int getStatus() {
         return status;
@@ -113,6 +132,8 @@ public class LoginBean {
                 ", qq='" + qq + '\'' +
                 ", sex='" + sex + '\'' +
                 ", email='" + email + '\'' +
+                ", access_token='" + access_token + '\'' +
+                ", message='" + message + '\'' +
                 '}';
     }
 }

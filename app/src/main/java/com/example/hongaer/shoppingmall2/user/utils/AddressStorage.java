@@ -50,7 +50,7 @@ public class AddressStorage {
                 consignee = spConsigneeAddressBeanList.get(i);
                 Log.i("6666","空指针的地方=="+spConsigneeAddressBeanList.get(i));
                 if(consignee.getMobile()!=null){
-                    sparseArray.put(Integer.parseInt(consignee.getConsignee()), consignee);
+                    sparseArray.put((int) Long.parseLong(consignee.getMobile()), consignee);
 
                 }
                 //sparseArray.put(Integer.parseInt(consignee.getProduct_id()), consignee);
@@ -78,35 +78,37 @@ public class AddressStorage {
         //1.添加到内存中 SparseArray
         Log.i("110110","空指针的地方=="+consignee);
        // consignee tempData = sparseArray.get(Integer.parseInt(consignee.getProduct_id()));
-       SPConsigneeAddressBean tempData = sparseArray.get(Integer.parseInt(consignee.getConsignee()));
+      try {
+          SPConsigneeAddressBean tempData = sparseArray.get((int) Long.parseLong(consignee.getMobile()));
+          if (tempData != null) {
+              // 内存中有了这条数据
+              //  tempData.setNumber(tempData.getNumber() + 1);
+          } else {
+              tempData = consignee;
+              // tempData.setNumber(1);
 
-        if (tempData != null) {
-           // 内存中有了这条数据
-          //  tempData.setNumber(tempData.getNumber() + 1);
-        } else {
-            tempData = consignee;
-           // tempData.setNumber(1);
+          }
+          //同步到内存中
+          //sparseArray.put(Integer.parseInt(tempData.getProduct_id()), tempData);
+          sparseArray.put((int) Long.parseLong(tempData.getMobile()), tempData);
 
-        }
-        //同步到内存中
-        //sparseArray.put(Integer.parseInt(tempData.getProduct_id()), tempData);
-        sparseArray.put(Integer.parseInt(tempData.getConsignee()), tempData);
+          //2.同步到本地
+          saveLocal();
+      }catch (NumberFormatException e){}
 
-        //2.同步到本地
-            saveLocal();
         }
     //删除数据
     public void deleteData(SPConsigneeAddressBean consignee) {
         //1.从内存中删除
      // sparseArray.delete(Integer.parseInt( consignee.getProduct_id()));
-        sparseArray.delete(Integer.parseInt( consignee.getConsignee()));
+        sparseArray.delete((int) Long.parseLong(consignee.getMobile()));
         //2.把内存数据保存到本地
         saveLocal();
     }
     //修改数据
     public void updataData(SPConsigneeAddressBean consignee) {
 
-      sparseArray.put(Integer.parseInt( consignee.getConsignee()), consignee);
+      sparseArray.put((int) Long.parseLong(consignee.getMobile()), consignee);
        saveLocal();
     }
 

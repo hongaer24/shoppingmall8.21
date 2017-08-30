@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.user.bean.LoginBean;
+import com.example.hongaer.shoppingmall2.user.view.FindPasswordActivity;
 import com.example.hongaer.shoppingmall2.user.view.RegisterActivity;
 import com.example.hongaer.shoppingmall2.utils.CacheUtils;
 import com.example.hongaer.shoppingmall2.utils.Constans;
@@ -67,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private boolean isShowPassword;
     public static final String QQ_APP_ID = "1106221777";
+  // public static final String QQ_APP_ID = "101417189";
     //需要腾讯提供的一个Tencent类
     private Tencent mTencent;
     //还需要一个IUiListener 的实现类（LogInListener implements IUiListener）
@@ -224,7 +226,10 @@ public class LoginActivity extends AppCompatActivity {
                // Toast.makeText(this,"注册",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_login_forget_pwd:
-                Toast.makeText(this,"忘记密码",Toast.LENGTH_SHORT).show();
+
+                Intent intent1=new Intent(LoginActivity.this,FindPasswordActivity.class);
+                startActivity(intent1);
+               // Toast.makeText(this,"忘记密码",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ib_weibo:
                 Toast.makeText(this,"微博",Toast.LENGTH_SHORT).show();
@@ -267,7 +272,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call call, final Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String json = response.body().string();
-                    Log.i("loging666777", "登录成功======" + json);
+                    //Log.i("loging666777", "登录成功======" + json);
 
                        /*  try {
                              JSONObject  jsonObject=new JSONObject(json);
@@ -276,17 +281,20 @@ public class LoginActivity extends AppCompatActivity {
                              final int  status=jsonObject.optInt("status");
                              Log.i("loging666","登录成功======"+usernam);*/
 
-
-                    final LoginBean loginBean = JSON.parseObject(json, LoginBean.class);
+                    LoginBean loginBean = JSON.parseObject(json, LoginBean.class);
                     final String username = loginBean.getUsername();
                      final int status = loginBean.getStatus();
-                   //  Log.i("loging66688","登录成功======"+loginBean);
+                     final String token=loginBean.getAccess_token();
+
+                    Log.i("loging66688","登录成功======"+token);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (status == 1) {
                                 CacheUtils.saveString(MyApplication.getContex(),"username",username);
-                                setContentView(R.layout.activity_login);
+                                CacheUtils.saveString(MyApplication.getContex(),"token",token);
+
+                                //setContentView(R.layout.activity_login);
                                 Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                               // intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
