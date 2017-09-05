@@ -1,4 +1,3 @@
-/*
 package com.example.hongaer.shoppingmall2.wxapi;
 
 import android.app.Activity;
@@ -6,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -13,24 +14,24 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URLEncoder;
 
-*/
-/**
- * Created by hongaer on 2017/8/21.
- *//*
+import cz.msebera.android.httpclient.Header;
 
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private IWXAPI api;
     private BaseResp resp = null;
-    private String WX_APP_ID = "创建应用后得到的APP_ID";
+    private String WX_APP_ID = "wx79b032a2d6f1fc0a";
     // 获取第一步的code后，请求以下链接获取access_token
     private String GetCodeRequest = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
     // 获取用户个人信息
     private String GetUserInfo = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID";
-    private String WX_APP_SECRET = "创建应用后得到的APP_SECRET";
+    private String WX_APP_SECRET = "2fa88d0a7438b1f2194ff18213cc0a04";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     // 第三方应用发送到微信的请求处理后的响应结果，会回调到该方法
    // @Override
-   */
-/* public void onResp(BaseResp resp) {
+ public void onResp(BaseResp resp) {
         String result = "";
         if (resp != null) {
             resp = resp;
@@ -59,18 +59,34 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show();
                 String code = ((SendAuth.Resp) resp).code;
 
-            *//*
-*/
-/*
-             * 将你前面得到的AppID、AppSecret、code，拼接成URL 获取access_token等等的信息(微信)
-             *//*
-*/
-/*
+
+             // 将你前面得到的AppID、AppSecret、code，拼接成URL 获取access_token等等的信息(微信)
+
                 String get_access_token = getCodeRequest(code);
                 AsyncHttpClient client = new AsyncHttpClient();
                 client.post(get_access_token, new JsonHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int statusCode, JSONObject response) {
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        try {
+
+
+                            if (!response.equals("")) {
+                                String access_token = response
+                                        .getString("access_token");
+                                String openid = response.getString("openid");
+                                String get_user_info_url = getUserInfo(
+                                        access_token, openid);
+                                getUserInfo(get_user_info_url);
+                            }
+
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    }
+                 /*   public void onSuccess(int statusCode, JSONObject response) {
                         // TODO Auto-generated method stub
                         super.onSuccess(statusCode, response);
                         try {
@@ -89,7 +105,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                    }
+                    }*/
                 });
 
                 finish();
@@ -110,22 +126,35 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 finish();
                 break;
         }
-    }*//*
+    }
 
 
-    */
-/**
-     * 通过拼接的用户信息url获取用户信息
-     *
-   //  * @param user_info_url
-     *//*
 
-   */
-/* private void getUserInfo(String user_info_url) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(user_info_url, new JsonHttpResponseHandler() {
+ private void getUserInfo(String user_info_url) {
+       AsyncHttpClient client = new AsyncHttpClient();
+        client.get(user_info_url,new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (!response.equals("")) {
+                    try {
+                        String openid = response.getString("openid");
+                        String nickname = response.getString("nickname");
+                        String headimgurl = response.getString("headimgurl");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+ }
+
+
+
+
+
+
+          /*  public void onSuccess(int statusCode, JSONObject response) {
                 // TODO Auto-generated method stub
                 super.onSuccess(statusCode, response);
                 try {
@@ -140,12 +169,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     }
 
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
+
                     e.printStackTrace();
                 }
-            }
-        });
-    }*//*
+            }*/
+
+
 
 
     @Override
@@ -155,15 +184,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         api.handleIntent(intent, this);
         finish();
     }
-
-    */
-/**
-     * 获取access_token的URL（微信）
-     *
-     * @param code
-     *            授权时，微信回调给的
-     * @return URL
-     *//*
 
     private String getCodeRequest(String code) {
         String result = null;
@@ -176,16 +196,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         return result;
     }
 
-    */
-/**
-     * 获取用户个人信息的URL（微信）
-     *
-     * @param access_token
-     *            获取access_token时给的
-     * @param openid
-     *            获取access_token时给的
-     * @return URL
-     *//*
+
+      //获取用户个人信息的URL（微信）
+
+     // @param access_token
+                // 获取access_token时给的
+     // @param openid
+               //  获取access_token时给的
+     // @return URL
+
 
     private String getUserInfo(String access_token, String openid) {
         String result = null;
@@ -206,4 +225,3 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         return result;
     }
 }
-*/

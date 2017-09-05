@@ -142,27 +142,26 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                     break;
                 }
                 case JSON_FLAG:
-
+                    // List<GoodsBean> goodsBeanList= (List<GoodsBean>) msg.obj;
                     showData();
                    // initData();
                     break;
-
+                //default:
 
             }
         }
 
         ;
     };
-         @Override
-         public void initData() {
-             //super.initData();
-           /*  checkData();*/
-          //showData();
-        Log.e("6666", "请求数据成功=======888888" );
+
+    public void initData() {
+        super.initData();
+
+        //Log.e("6666", "请求数据成功=======888888" );
         String reg_url = Constans.SHOPPINGCART_URL;
         // final String token="90498ceb48917654d7116c2a9b8198fb";
         final String token = CacheUtils.getString(MyApplication.getContex(), "token");
-
+        Log.e("6666888", "请求数据成功======="+token );
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody body = new FormBody.Builder().add("token", token).build();
         Request request = new Request.Builder().url(reg_url).post(body).build();
@@ -242,17 +241,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
         }
     }
-    private void checkData() {
-        List<GoodsBean> goodsBeanList = CartStorage.getInstance().getAllData();
-        if ( goodsBeanList!= null && goodsBeanList.size() > 0) {
-             llCheckAll.setVisibility(View.VISIBLE);
-            ll_empty_shopcart.setVisibility(View.GONE);
-        } else {
-            emptyShoppingCart();
-           /* ll_empty_shopcart.setVisibility(View.VISIBLE);
-            tvShopcartEdit.setVisibility(View.GONE);*/
-        }
-    }
+
 
     public void onClick(View v) {
 
@@ -264,13 +253,11 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         } else if (v == btnDelete) {
             //removeHttp();
             adapter.removeHttp();
-               showData();
             //adapter.deleteData();
             //adapter.checkAll();
-             //checkData();
-         /*   if (adapter.getItemCount() == 0) {
+            if (adapter.getItemCount() == 0) {
                 emptyShoppingCart();
-            }*/
+            }
             // Handle clicks for btnDelete
         } else if (v == btnCollection) {
             // Handle clicks for btnCollection
@@ -375,7 +362,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
         initData();
-        showData();
+       // showData();
         hideDelete();
     }
 
@@ -384,7 +371,6 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         ll_empty_shopcart.setVisibility(View.VISIBLE);
         tvShopcartEdit.setVisibility(View.GONE);
         llDelete.setVisibility(View.GONE);
-        llCheckAll.setVisibility(View.GONE);
     }
 
     // 商户PID

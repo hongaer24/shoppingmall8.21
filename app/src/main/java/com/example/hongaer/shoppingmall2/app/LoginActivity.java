@@ -24,6 +24,9 @@ import com.example.hongaer.shoppingmall2.utils.Constans;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
 import com.tencent.connect.common.Constants;
+import com.tencent.mm.opensdk.modelmsg.SendAuth;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -67,7 +70,9 @@ public class LoginActivity extends AppCompatActivity {
     ImageButton ibWechat;
     private static final String TAG = "LoginActivity";
     private boolean isShowPassword;
-    public static final String QQ_APP_ID = "1106221777";
+    public static final String QQ_APP_ID = "1106354818";   // 1106221777
+    private static IWXAPI WXapi;
+    private String WX_APP_ID = "wx79b032a2d6f1fc0a";
   // public static final String QQ_APP_ID = "101417189";
     //需要腾讯提供的一个Tencent类
     private Tencent mTencent;
@@ -151,7 +156,21 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Constants.REQUEST_LOGIN){
+            Tencent.onActivityResultData(requestCode,resultCode,data,mIUiListener);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    private void WXLogin() {
+        WXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
+        WXapi.registerApp(WX_APP_ID);
+        SendAuth.Req req = new SendAuth.Req();
+        req.scope = "snsapi_userinfo";
+        req.state = "wechat_sdk_demo";
+        WXapi.sendReq(req);
 
+    }
     @OnClick({R.id.ib_login_back, R.id.ib_login_visible, R.id.btn_login, R.id.tv_login_register, R.id.tv_login_forget_pwd, R.id.ib_weibo, R.id.ib_qq, R.id.ib_wechat})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -183,20 +202,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     Toast.makeText(this,"账号和密码不能为空",Toast.LENGTH_SHORT).show();
                 }
-              /*  CacheUtils.saveString(context,"username",username);
-                CacheUtils.saveString(context,"password", password);*/
                 postJson(username,password);
-            /*    new Thread(){
-                    @Override
-                public void run()
-                {
-                    postJson(username, password);
-                }
-                }.start();*/
+
             break;
-
-
-
 
               /*  BmobUser user=new BmobUser();
 
@@ -250,6 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                // mTencent.login(LoginActivity.this,"all", mIUiListener);
                 break;
             case R.id.ib_wechat:
+                WXLogin();
                 Toast.makeText(this,"微信",Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -349,12 +358,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }*/
     }
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == Constants.REQUEST_LOGIN){
-            Tencent.onActivityResultData(requestCode,resultCode,data,mIUiListener);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+
     private void processData(String json) {
         LoginBean loginBean = JSON.parseObject(json, LoginBean.class);
         Log.i("tag888","解析成功===+"+loginBean.getStatus());
