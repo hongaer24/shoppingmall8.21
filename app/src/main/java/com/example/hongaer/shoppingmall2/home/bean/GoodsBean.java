@@ -7,12 +7,31 @@ import java.io.Serializable;
  */
 
 public class GoodsBean implements Serializable {
+
+    //店铺名称
+    private String sellername;
+    //商品名称
     private String name;
     private String cover_price;
     private String figure;
     private String product_id;
     private int number = 1;
     private int goods_id;
+
+    //电话
+    private String mobile;
+
+    //收货人姓名
+    private String consignee;
+
+    //是否默认地址
+    private  String isDefault;
+
+    private String fullAddress;
+
+    private String addressID;
+    //详细地址
+    private String address;
 
     public String getType() {
         return type;
@@ -25,22 +44,14 @@ public class GoodsBean implements Serializable {
     private String type;
 
     private boolean isSelected ;
+    public String getSellername() {
+        return sellername;
+    }
 
-    //电话
-    String mobile;
+    public void setSellername(String sellername) {
+        this.sellername = sellername;
+    }
 
-    //收货人姓名
-    String consignee;
-
-
-    //是否默认地址
-    String isDefault;
-
-    String fullAddress;
-
-    String addressID;
-    //详细地址
-    String address;
 
 
     public String getProduct_id() {
@@ -154,19 +165,20 @@ public class GoodsBean implements Serializable {
     @Override
     public String toString() {
         return "GoodsBean{" +
-                "name='" + name + '\'' +
+                "sellername='" + sellername + '\'' +
+                ", name='" + name + '\'' +
                 ", cover_price='" + cover_price + '\'' +
                 ", figure='" + figure + '\'' +
                 ", product_id='" + product_id + '\'' +
                 ", number=" + number +
                 ", goods_id=" + goods_id +
-                ", type='" + type + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", consignee='" + consignee + '\'' +
                 ", isDefault='" + isDefault + '\'' +
                 ", fullAddress='" + fullAddress + '\'' +
                 ", addressID='" + addressID + '\'' +
                 ", address='" + address + '\'' +
+                ", type='" + type + '\'' +
                 ", isSelected=" + isSelected +
                 '}';
     }

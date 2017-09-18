@@ -7,45 +7,52 @@ package com.example.hongaer.shoppingmall2.utils;
 public class Constans {
 
     //public  static  String BASE_URL="http://192.168.3.68:8080/atguigu";
-    public  static  String BASE_URL="http://killsound888.oicp.net:118/jinque/debug/jqmall/";
-    public  static  String BASE_URL_JSON="http://192.168.3.68:8080/atguigu/json";
-    public  static  String BASE_URL_JQ_MSG="http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&mobile=";
+    //public  static  String BASE_URL="http://killsound888.oicp.net:118/jinque/debug/jqmall/";
+
+    //public static String BASE_URL_JSON = "http://192.168.3.68:8080/atguigu/json";
+    public static String BASE_URL_JQ_MSG = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&mobile=";
     /**
      * 主页面路径
      */
 
-    public  static  String HOME_URLS="http://192.168.199.210:8080/atguigu/json/HOME_URL.json";
+    //public  static  String HOME_URLS="http://192.168.199.210:8080/atguigu/json/HOME_URL.json";
     //public  static  String HOME_URLS="http://192.168.3.68:8080/atguigu/json/HOME_URL.json";
-    public  static  String HOME_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=login_act";
-    public  static  String PASSWORD_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=password_edit";
-    public  static  String ADRRES_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=block_app&action=area_list";
-    public  static  String SHOPPINGCART_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=showCart";
-   // public  static  String MSG_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&moblie=18502502014";
-      //验证码接口
-      public  static  String MSG_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&mobile=18502502014";
 
+    //public  static  String LOGIN_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=login_act";
+     //主页接口
+    public static String BASE_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/";
+    //修改密码接口
+    public static String PASSWORD_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=password_edit";
+    //省市区接口
+    public static String ADRRES_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=block_app&action=area_list";
+    //购物车列表接口
+    public static String SHOPPINGCART_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=showCart";
+    //登录接口
+    public static String LOGIN_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=login_act";
+    // public  static  String MSG_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&moblie=18502502014";
+    //验证码接口
+    public static String MSG_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&mobile=18502502014";
     //注册接口
-    public  static  String reg_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_act";
+    public static String reg_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_act";
     //找回密码
-    public  static  String SEND_MESSAGE__URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=send_message_mobile&mobile=18502502014";
+    public static String SEND_MESSAGE__URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=send_message_mobile&mobile=18502502014";
     //找回密码修改接口
-    public  static  String FIND_PASSWOED__URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=find_password_mobile";
-     //加入购物车接口
-     public  static  String JOIN_CART_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=joinCart";
-   //删除商品接口
-   public  static  String REMOVE_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=removeCart";
-
-
-
+    public static String FIND_PASSWOED__URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=find_password_mobile";
+    //加入购物车接口
+    public static String JOIN_CART_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=joinCart";
+    //删除商品接口
+    public static String REMOVE_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=removeCart";
+     //提交订单接口
+     public static String SUBMIT_ORDER_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=order_app&action=cart_order";
     /**
      * 图片路径
      */
 
 
-   public  static  String BASE_URL_IMAGES=BASE_URL+"/img";
+    public static String BASE_URL_IMAGES = BASE_URL + "/img";
 
     //public  static  String BASE_URL_IMAGES=BASE_URL+"/img";
-
+/*
     //小裙子
     public static final String SKIRT_URL = BASE_URL_JSON + "SKIRT_URL.json";
     //上衣
@@ -65,7 +72,7 @@ public class Constans {
     //办公文具
     public static final String STATIONERY_URL = BASE_URL_JSON + "STATIONERY_URL.json";
     //数码周边
-    public static final String DIGIT_URL = BASE_URL_JSON +  "DIGIT_URL.json";
+    public static final String DIGIT_URL = BASE_URL_JSON + "DIGIT_URL.json";
     //游戏专区
-    public static final String GAME_URL = BASE_URL_JSON + "GAME_URL.json";
+    public static final String GAME_URL = BASE_URL_JSON + "GAME_URL.json";*/
 }

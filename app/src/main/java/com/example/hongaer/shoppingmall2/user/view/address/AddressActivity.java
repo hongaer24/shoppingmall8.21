@@ -9,8 +9,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
@@ -49,9 +51,11 @@ public class AddressActivity extends AppCompatActivity {
     EditText etArea;
     @BindView(R.id.submit_btn)
     Button submitBtn;
+    @BindView(R.id.consignee_setdefault_sth)
+    Switch SetdefaultSth;
 
 
-    OptionsPickerView pvOptions;
+   // OptionsPickerView pvOptions;
     //  省份
     ArrayList<ProvinceBean> provinceBeanList = new ArrayList<>();
     //  城市
@@ -62,7 +66,6 @@ public class AddressActivity extends AppCompatActivity {
     ArrayList<List<String>> districts;
     ArrayList<List<List<String>>> districtList = new ArrayList<>();
 
-    // private EditText etPhone;
     private String url = Constans.ADRRES_URL;
     public boolean isLoaded;
     private String province_data_json;
@@ -70,10 +73,7 @@ public class AddressActivity extends AppCompatActivity {
     private static final int MSG_LOAD_SUCCESS = 0x0002;
     private static final int MSG_LOAD_FAILED = 0x0003;
     private OptionsPickerView pvOption;
-   // private consignee consignee;
-     private  SPConsigneeAddressBean consignee;
-
-    // private EditText etArea;
+    private SPConsigneeAddressBean consignee;
 
 
     @Override
@@ -82,12 +82,22 @@ public class AddressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_address);
         ButterKnife.bind(this);
         //  创建选项选择器
-
-
         getHttp();
         initData();
+        intSubView();
+    }
 
-
+    private void intSubView() {
+           SetdefaultSth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+               @Override
+               public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                         if(isChecked){
+                            consignee.setIsDefault("1");
+                         }else {
+                             consignee.setIsDefault("0");
+                         }
+               }
+           });
     }
 
     public void initData() {
@@ -105,16 +115,15 @@ public class AddressActivity extends AppCompatActivity {
             etPhone.setText(consignee.getMobile());
             etMoreAddress.setText(consignee.getAddress());
             etArea.setText(consignee.getFullAddress());
-            /*if ("1".equals(consignee.getIsDefault())){
-                consigneeSetdefaultSth.setChecked(true);
+            if ("1".equals(consignee.getIsDefault())){
+               SetdefaultSth.setChecked(true);
             }else{
-                consigneeSetdefaultSth.setChecked(false);
+              SetdefaultSth.setChecked(false);
             }
-            String firstPart = SPPersonDao.getInstance(this).queryFirstRegion(consignee.getProvince() , consignee.getCity() , consignee.getDistrict() , consignee.getTown());
-            regionTxtv.setText(firstPart);
-        }*/
+
         }
     }
+
 
     private boolean checkData() {
         if (TextUtils.isEmpty(etReceived.getText().toString())) {
@@ -164,65 +173,20 @@ public class AddressActivity extends AppCompatActivity {
         }
     };
 
-
     private void showPickerView() {
-        //pvOptions = new OptionsPickerView(this);
-        // if (cityList != null && cityList.size() > 0 && districtList != null && districtList.size() > 0 && provinceBeanList != null && provinceBeanList.size() > 0) {
-        //pvOptions.setPicker(provinceBeanList, cityList, districtList, true);
-        //  设置是否循环滚动
 
-        //pvOptions.setCyclic(false, false, false);
-        // 设置默认选中的三级项目
-        // pvOptions.setSelectOptions(0, 0, 0);
-        //  监听确定选择按钮
-          /*  pvOptions.setOnoptionsSelectListener(new OptionsPickerView.OnOptionsSelectListener() {
-                @Override
-                public void onOptionsSelect(int options1, int option2, int options3) {
-                    //返回的分别是三个级别的选中位置
-                    if (provinceBeanList != null && provinceBeanList.size() > 0) {
-                    String city = provinceBeanList.get(options1).getPickerViewText();
-                    String address;
-                    //  如果是直辖市或者特别行政区只设置市和区/县
-                    // if (cityList != null && cityList.size() > 0 && districtList != null && districtList.size() > 0&&provinceBeanList!=null&&provinceBeanList.size()>0) {
-
-                    if ("北京市".equals(city) || "上海市".equals(city) || "天津市".equals(city) || "重庆市".equals(city)|| "澳门特别行政区".equals(city)|| "台湾省".equals(city)|| "香港特别行政区".equals(city)) {
-                        address = provinceBeanList.get(options1).getPickerViewText()
-                                + " " + districtList.get(options1).get(option2).get(options3);
-                    } else {
-                        address = provinceBeanList.get(options1).getPickerViewText()
-                                + " " + cityList.get(options1).get(option2)
-                                + " " + districtList.get(options1).get(option2).get(options3);
-                    }
-                    etArea.setText(address);
-                }
-                  }
-
-                // }
-                // }
-            });*/
         pvOption = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                String city = provinceBeanList.get(options1).getPickerViewText();
+                //String city = provinceBeanList.get(options1).getPickerViewText();
                 String address;
-                //  如果是直辖市或者特别行政区只设置市和区/县
-                // if (cityList != null && cityList.size() > 0 && districtList != null && districtList.size() > 0&&provinceBeanList!=null&&provinceBeanList.size()>0) {
 
-                 /* if ("北京市".equals(city) || "上海市".equals(city) || "天津市".equals(city) || "重庆市".equals(city)*//*|| "澳门特别行政区".equals(city)|| "台湾省".equals(city)|| "香港特别行政区".equals(city)*//*) {
-                      address = provinceBeanList.get(options1).getPickerViewText()
-                              + " " + districtList.get(options1).get(options2).get(options3);
-                  } else if("澳门特别行政区".equals(city)|| "台湾省".equals(city)|| "香港特别行政区".equals(city)){
-                      address = provinceBeanList.get(options1).getPickerViewText()
-                              + " " + cityList.get(options1).get(options2);
-
-                  } else {*/
                 address = provinceBeanList.get(options1).getPickerViewText()
                         + " " + cityList.get(options1).get(options2)
                         + " " + districtList.get(options1).get(options2).get(options3);
                  /* }*/
                 etArea.setText(address);
             }
-
 
         })
                 .setTitleText("请选择省市")
@@ -299,9 +263,11 @@ public class AddressActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.ib_goods_back, R.id.et_area,R.id.submit_btn})
+    @OnClick({R.id.ib_goods_back, R.id.et_area, R.id.submit_btn, R.id.consignee_setdefault_sth})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.consignee_setdefault_sth:
+                break;
             case R.id.ib_goods_back:
                 finish();
                 break;
@@ -314,26 +280,17 @@ public class AddressActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.submit_btn:
-                   if(!checkData()){
+                if (!checkData()) {
 
-                       return;
-                   }else if(getIntent() != null && getIntent().getSerializableExtra("consignee") != null){
-                           AddressStorage.getInstance().updataData(consignee);
-                   }else {
-                       AddressStorage.getInstance().addData(consignee);
-                   }
+                    return;
+                } else if (getIntent() != null && getIntent().getSerializableExtra("consignee") != null) {
+                    AddressStorage.getInstance().updataData(consignee);
+                } else {
+                    AddressStorage.getInstance().addData(consignee);
+                }
 
-
-                Log.i("consignee","======"+consignee);
-               /* CacheUtils.saveString(MyApplication.getContex(),"address",consignee.getAddress());
-                CacheUtils.saveString(MyApplication.getContex(),"mobile",consignee.getMobile());
-                CacheUtils.saveString(MyApplication.getContex(),"is_default",consignee.getIsDefault());
-                CacheUtils.saveString(MyApplication.getContex(),"etArea",etArea.getText().toString());*/
-                /*if (!TextUtils.isEmpty(consignee.getAddressID())) {//编辑
-                    CacheUtils.saveString(MyApplication.getContex(),"address_id",consignee.getAddressID());
-
-                }*/
-                  finish();
+                Log.i("consignee", "======" + consignee);
+                finish();
                 break;
         }
     }
@@ -341,6 +298,8 @@ public class AddressActivity extends AppCompatActivity {
     public void showToast(String msg) {
         SPDialogUtils.showToast(this, msg);
     }
+
+
 
 
     //  解析json填充集合

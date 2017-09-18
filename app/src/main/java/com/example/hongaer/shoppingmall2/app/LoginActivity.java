@@ -14,6 +14,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ali.auth.third.ui.context.CallbackContext;
+import com.alibaba.baichuan.trade.biz.login.AlibcLogin;
+import com.alibaba.baichuan.trade.biz.login.AlibcLoginCallback;
 import com.alibaba.fastjson.JSON;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.user.bean.LoginBean;
@@ -21,10 +24,11 @@ import com.example.hongaer.shoppingmall2.user.view.FindPasswordActivity;
 import com.example.hongaer.shoppingmall2.user.view.RegisterActivity;
 import com.example.hongaer.shoppingmall2.utils.CacheUtils;
 import com.example.hongaer.shoppingmall2.utils.Constans;
+import com.example.hongaer.shoppingmall2.utils.Http;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
-import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
+import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
@@ -84,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     private String password;
     private String url;
     private Context context;
+    private IWXAPI api;
 
 
     @Override
@@ -92,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
-
+            api = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
 
             //  Bmob.initialize(LoginActivity.this,"90d09ab48f73eb4f3c73d5fc44dc001d");//一定要初始化，否则登录会空指针
 
@@ -156,12 +161,62 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+   /* protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == Constants.REQUEST_LOGIN){
             Tencent.onActivityResultData(requestCode,resultCode,data,mIUiListener);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        CallbackContext.onActivityResult(requestCode, resultCode, data);
     }
+
+    public void login(View view) {
+
+        final AlibcLogin alibcLogin = AlibcLogin.getInstance();
+        alibcLogin.showLogin(new AlibcLoginCallback() {
+            @Override
+            public void onSuccess(int i) {
+                Toast.makeText(LoginActivity.this, "登录成功 ",
+                        Toast.LENGTH_LONG).show();
+                //获取淘宝用户信息
+                Log.i(TAG, "获取淘宝用户信息: " + AlibcLogin.getInstance().getSession());
+
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+                Toast.makeText(LoginActivity.this, "登录失败 ",
+                        Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+    }
+
+
+
+
+   /* public void logout(View view) {
+
+        AlibcLogin alibcLogin = AlibcLogin.getInstance();
+
+        alibcLogin.logout(LoginActivity.this, new LogoutCallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(LoginActivity.this, "退出登录成功",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+                Toast.makeText(LoginActivity.this, "退出登录失败 " + code + msg,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }*/
+
     private void WXLogin() {
         WXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
         WXapi.registerApp(WX_APP_ID);
@@ -169,6 +224,51 @@ public class LoginActivity extends AppCompatActivity {
         req.scope = "snsapi_userinfo";
         req.state = "wechat_sdk_demo";
         WXapi.sendReq(req);
+
+    }
+    public void testWxPay( ) {
+        new Thread(new Runnable() {
+            public PayReq req;
+
+            @Override
+            public void run() {
+                Log.i("6666666666666:", "666666");
+                String url = "http://wxpay.weixin.qq.com/pub_v2/app/app_pay.php?plat=android";
+                //ToastUtil.shortToastInBackgroundThread(getActivity(), "获取订单中...");
+                try {
+                    String buf = Http.get(url);
+                    if (buf != null && buf.length() > 0) {
+                        String content = new String(buf);
+                         Log.e("get server pay params:", content);
+                        JSONObject json = new JSONObject(content);
+                        if (null != json && !json.has("retcode")) {
+                            req = new PayReq();
+                            //req.appId = "wxf8b4f85f3a794e77";  // 测试用appId
+                            req.appId =  "wx79b032a2d6f1fc0a";
+                            req.partnerId = json.getString("partnerid");
+                            req.prepayId = json.getString("prepayid");
+                            req.nonceStr = json.getString("noncestr");
+                            req.timeStamp = json.getString("timestamp");
+                            req.packageValue = json.getString("package");
+                            req.sign = json.getString("sign");
+                            req.extData = "app data"; // optional
+                            WXapi.registerApp(WX_APP_ID);
+                            //ToastUtil.shortToastInBackgroundThread(getActivity(), "正常调起支付");
+                            WXapi.sendReq(req);
+                        } else {
+                            Log.d("PAY_GET", "返回错误" + json.getString("retmsg"));
+                            //toas.shortToastInBackgroundThread(getActivity(), "返回错误" + json.getString("retmsg"));
+                        }
+                    } else {
+                        Log.d("PAY_GET", "服务器请求错误");
+                        //ToastUtil.shortToastInBackgroundThread(getActivity(), "服务器请求错误");
+                    }
+                } catch (Exception e) {
+                    Log.e("PAY_GET", "异常：" + e.getMessage());
+                    //ToastUtil.shortToastInBackgroundThread(getActivity(), "异常：" + e.getMessage());
+                }
+            }
+        }).start();
 
     }
     @OnClick({R.id.ib_login_back, R.id.ib_login_visible, R.id.btn_login, R.id.tv_login_register, R.id.tv_login_forget_pwd, R.id.ib_weibo, R.id.ib_qq, R.id.ib_wechat})
@@ -240,6 +340,9 @@ public class LoginActivity extends AppCompatActivity {
                // Toast.makeText(this,"忘记密码",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ib_weibo:
+                login(view);
+               // testWxPay();
+                // login(view);
                 Toast.makeText(this,"微博",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ib_qq:
@@ -267,7 +370,7 @@ public class LoginActivity extends AppCompatActivity {
     private void postJson(final String username, final String password) {
         //申明给服务端传递一个json串
         //创建一个OkHttpClient对象
-        url = Constans.HOME_URL;
+        url = Constans.LOGIN_URL;
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody body = new FormBody.Builder().add("login_info", username).add("password", password).build();
         Request request = new Request.Builder().url(url).post(body).build();
@@ -281,7 +384,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call call, final Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String json = response.body().string();
-                    //Log.i("loging666777", "登录成功======" + json);
+                    Log.i("loging666777", "登录成功======" + json);
 
                        /*  try {
                              JSONObject  jsonObject=new JSONObject(json);
@@ -299,7 +402,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (status == 1) {
+                            if (status == 1000) {
                                 CacheUtils.saveString(MyApplication.getContex(),"username",username);
                                 CacheUtils.saveString(MyApplication.getContex(),"token",token);
 

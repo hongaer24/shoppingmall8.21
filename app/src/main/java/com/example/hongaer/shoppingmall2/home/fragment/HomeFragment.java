@@ -65,7 +65,7 @@ public class HomeFragment extends BaseFragment {
          webSettings.setUseWideViewPort(true);
          webSettings.setJavaScriptEnabled(true);
          webview.setWebViewClient(new WebViewClient());
-         webview.loadUrl( "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=site&action=index");
+         webview.loadUrl("http://killsound888.oicp.net:118/jinque/debug/jqmall/");
          webview.setWebViewClient(new HelloWebViewClient());
         //Web视图
 
@@ -143,7 +143,7 @@ public class HomeFragment extends BaseFragment {
             public void onResponse(Call call, Response response) throws IOException {
                               if(response.isSuccessful()){
                                   String json=response.body().string();
-                                 // Log.i("tag5655555","请求数据成功======="+json);
+                                  Log.i("tag5655555","请求数据成功======="+json);
                                  // Log.i("token66","请求数据成功======="+token);
                                   //processData(json);
                               }

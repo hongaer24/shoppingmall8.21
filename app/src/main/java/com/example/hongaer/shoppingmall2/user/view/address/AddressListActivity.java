@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.example.hongaer.shoppingmall2.R;
+import com.example.hongaer.shoppingmall2.shoppingcart.view.ConfirmOrderActivity;
 import com.example.hongaer.shoppingmall2.user.adapter.SPAddressListAdapter;
 import com.example.hongaer.shoppingmall2.user.bean.SPConsigneeAddressBean;
 import com.example.hongaer.shoppingmall2.user.utils.AddressStorage;
@@ -55,7 +56,7 @@ public class AddressListActivity extends AppCompatActivity implements  SPAddress
 
         spConsigneeAddressBeanList= AddressStorage.getInstance().getAllData();
         mAdapter = new SPAddressListAdapter(this, this,spConsigneeAddressBeanList);
-       addressListv.setAdapter(mAdapter);
+        addressListv.setAdapter(mAdapter);
        // ptrClassicFrameLayout.setPtrHandler(new PtrDefaultHandler() {
 
 
@@ -94,38 +95,48 @@ public class AddressListActivity extends AppCompatActivity implements  SPAddress
         }
     */
     public void onItemEdit(SPConsigneeAddressBean consignee) {
-        Intent intent = new Intent(this, AddressActivity.class);
+        Intent intent = new Intent(this,AddressActivity.class);
         intent.putExtra("consignee" , consignee);
         startActivity(intent);
     }
     @Override
     public void onItemDelete(final SPConsigneeAddressBean consignee) {
-           AddressStorage.getInstance().deleteData(consignee);
-             // mAdapter.notifyDataSetChanged();
-              initData();
-
-              /*  //刷新
-               addressListv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                   @Override
-                   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                spConsigneeAddressBeanList.remove(position);
-                                mAdapter.setData(spConsigneeAddressBeanList);
-
-                   }
-               });*/
-                //  refreshData();
-
-
-            }
-
-    private void refreshData() {
-
+        AddressStorage.getInstance().deleteData(consignee);
+        // mAdapter.notifyDataSetChanged();
+        initData();
     }
-
     @Override
     public void onItemSetDefault(SPConsigneeAddressBean consignee) {
 
+        if (spConsigneeAddressBeanList != null && spConsigneeAddressBeanList.size() > 0) {
+            for (int i = 0; i < spConsigneeAddressBeanList.size(); i++) {
+               //Log.i("token222666","请求数据成功======="+spConsigneeAddressBeanList.get(2).getMobile());
+                //Log.i("token22277","请求数据成功======="+consignee.getMobile());
+                if(consignee.getMobile().equals(spConsigneeAddressBeanList.get(i).getMobile())){
+                    consignee.setIsDefault("1");
+                    AddressStorage.getInstance().updataData(consignee);
+                    initData();
+                    if(getIntent()!=null&&getIntent().getStringExtra("goods")!=null){
+                                    Intent intent=new Intent(this, ConfirmOrderActivity.class);
+                                     intent.putExtra("consignee",consignee);
+                                     startActivity(intent);
+                    }
+
+                }else {
+                    SPConsigneeAddressBean consignee2 = spConsigneeAddressBeanList.get(i);
+                     consignee2.setIsDefault("0");
+                    AddressStorage.getInstance().updataData(consignee2);
+                    initData();
+                }
+
+            }
+
+        }
+
     }
+
+
+
 
     @OnClick({R.id.ib_goods_back,R.id.address_list_pcl, R.id.add_address_btn})
     public void onClick(View view) {

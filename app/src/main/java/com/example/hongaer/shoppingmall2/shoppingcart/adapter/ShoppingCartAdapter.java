@@ -92,10 +92,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final GoodsBean goodsBean = datas.get(position);
         holder.cbGov.setChecked(goodsBean.isSelected());
+        holder.cbShopGov.setChecked(goodsBean.isSelected());
         Glide.with(mContext).load(Constans.BASE_URL + goodsBean.getFigure()).into(holder.ivGov);
         holder.tvDescGov.setText(goodsBean.getName());
         holder.tvPriceGov.setText("¥" + goodsBean.getCover_price());
         holder.addSubView.setValue(goodsBean.getNumber());
+        holder.shopView.setText(goodsBean.getSellername());
         holder.addSubView.setMaxValue(7);
         holder.addSubView.setMinValue(1);
 
@@ -207,6 +209,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
     @Override
     public int getItemCount() {
+
         return datas.size();
     }
     public  void removeHttp() {
@@ -282,18 +285,22 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         private CheckBox cbGov;
+        private CheckBox cbShopGov;
         private ImageView ivGov;
         private TextView tvDescGov;
         private TextView tvPriceGov;
         private AddSubView addSubView;
+        private TextView shopView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             cbGov = (CheckBox) itemView.findViewById(R.id.cb_gov);
+            cbShopGov = (CheckBox) itemView.findViewById(R.id.cb_shop_gov);
             ivGov = (ImageView) itemView.findViewById(R.id.iv_gov);
             tvDescGov = (TextView) itemView.findViewById(R.id.tv_desc_gov);
             tvPriceGov = (TextView) itemView.findViewById(R.id.tv_price_gov);
             addSubView = (AddSubView) itemView.findViewById(R.id.AddSubView);
+            shopView=(TextView) itemView.findViewById(R.id.tv_shop);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

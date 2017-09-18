@@ -3,6 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:background="#11000000" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+        <CheckBox
+            android:id="@+id/cb_shop_gov"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="10dp"
+            android:button="@drawable/checkbox_selector"
+            android:checked="true"
+            android:clickable="false" />
+        <ImageView
+            android:id="@+id/iv_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/mcc_02"
+            android:scaleType="fitXY" />
+        <TextView
+            android:id="@+id/tv_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text="卡菲奥服饰"
+            android:drawableRight="@drawable/home_arrow_right"
+            android:drawablePadding="8dp"
+            android:textColor="#404040"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
     <!--线性布局-->
     <LinearLayout
         android:layout_width="match_parent"

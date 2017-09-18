@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.user.bean.SPConsigneeAddressBean;
-import com.example.hongaer.shoppingmall2.user.utils.AddressStorage;
 
 import java.util.List;
 
@@ -65,6 +64,7 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
             holder.mobileTxtv = ((TextView) convertView.findViewById(R.id.address_mobile_txtv)) ;
             holder.addressTxtv = ((TextView) convertView.findViewById(R.id.address_detail_txtv)) ;
             holder.setDefaultBtn= ((Button) convertView.findViewById(R.id.address_setdefault_btn)) ;
+            holder.setDefaultTxtv= ((TextView) convertView.findViewById(R.id.address_default_txtv)) ;
             holder.editBtn= ((Button) convertView.findViewById(R.id.address_edit_btn)) ;
             holder.deleteBtn = ((Button) convertView.findViewById(R.id.address_delete_btn)) ;
             //设置标记
@@ -93,8 +93,10 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
 
         if("1".equals( consignee.getIsDefault())){
             holder.setDefaultBtn.setBackgroundResource(R.drawable.icon_checked);
+            holder.setDefaultTxtv.setText("默认地址");
         }else{
             holder.setDefaultBtn.setBackgroundResource(R.drawable.icon_checkno);
+            holder.setDefaultTxtv.setText("设为默认");
         }
 
         return convertView;
@@ -109,13 +111,15 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
             case R.id.address_delete_btn:
 
                 if (mAddressListListener!= null)
-                    mAddressListListener.onItemDelete( consignee);
+                    mAddressListListener.onItemDelete(consignee);
                 break;
             case R.id.address_edit_btn:
                 if (mAddressListListener!=null)mAddressListListener.onItemEdit( consignee);
                 break;
             case R.id.address_setdefault_btn:
+                  // consignee.setIsDefault("1");
                 if (mAddressListListener!=null)mAddressListListener.onItemSetDefault( consignee);
+
                 break;
         }
 
@@ -132,8 +136,8 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
 
 
     public interface AddressListListener{
-        public void onItemDelete(SPConsigneeAddressBean  consignee);
-        public void onItemEdit(SPConsigneeAddressBean  consignee);
-        public void onItemSetDefault(SPConsigneeAddressBean  consignee);
+        void onItemDelete(SPConsigneeAddressBean  consignee);
+        void onItemEdit(SPConsigneeAddressBean  consignee);
+        void onItemSetDefault(SPConsigneeAddressBean  consignee);
     }
 }

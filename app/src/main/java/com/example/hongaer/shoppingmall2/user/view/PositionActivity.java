@@ -73,7 +73,7 @@ public class PositionActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.ib_goods_back, R.id.tv_IDsafe, R.id.bt_loingback,R.id.tv_xinxi})
+    @OnClick({R.id.ib_goods_back, R.id.tv_IDsafe, R.id.bt_loingback,R.id.tv_xinxi,R.id.tv_for_us})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ib_goods_back:
@@ -93,8 +93,12 @@ public class PositionActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.tv_xinxi:
-                //showPopwindow();
-               CartStorage.getInstance().addData(goodsBean);
+                Intent intent2=new Intent(this,PersonActivity.class);
+                  startActivity(intent2);
+                break;
+            case R.id.tv_for_us:
+                Intent intent3=new Intent(this,ForUsActivity.class);
+                startActivity(intent3);
                 break;
         }
     }

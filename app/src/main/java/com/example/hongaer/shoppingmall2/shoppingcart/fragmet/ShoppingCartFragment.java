@@ -32,8 +32,10 @@ import com.example.hongaer.shoppingmall2.shoppingcart.adapter.ShoppingCartAdapte
 import com.example.hongaer.shoppingmall2.shoppingcart.pay.PayResult;
 import com.example.hongaer.shoppingmall2.shoppingcart.pay.SignUtils;
 import com.example.hongaer.shoppingmall2.shoppingcart.utils.CartStorage;
+import com.example.hongaer.shoppingmall2.shoppingcart.view.ConfirmOrderActivity;
 import com.example.hongaer.shoppingmall2.utils.CacheUtils;
 import com.example.hongaer.shoppingmall2.utils.Constans;
+import com.example.hongaer.shoppingmall2.utils.Http;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -74,12 +76,13 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     private ShoppingCartAdapter adapter;
     private static final int ACTION_EDIT = 1;
     private static final int ACTION_COMPLETE = 2;
-    public String url = Constans.HOME_URLS;
+   // public String url = Constans.HOME_URLS;
     private ResultDataBean.ResultBean resultbean;
     private RecyclerView recyclerView;
     private GoodsBean goodsBean;
     private List<DatasBean.DataBean> bean;
-    private List<GoodsBean> datas;
+    private List<GoodsBean> goodsBeanList;
+    //private List<GoodsBean> datas;
     // private List<GoodsBean> goodsBeanList;
 
     @Override
@@ -208,10 +211,12 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
                 DatasBean.DataBean datasbean = bean.get(i);
                 goodsBean=new GoodsBean();
                 goodsBean.setName(datasbean.getName());
-                goodsBean.setCover_price(datasbean.getSell_price());
+                goodsBean.setSellername(datasbean.getSellername());
+                goodsBean.setCover_price(datasbean.getSellprice());
                 goodsBean.setFigure(datasbean.getImg());
                 goodsBean.setGoods_id(datasbean.getId());
                 goodsBean.setType(datasbean.getType());
+                Log.i("tag22233333", "请求数据成功=======" + goodsBean);
                 CartStorage.getInstance().addData(goodsBean);
 
                 //goodsBeanList.add(goodsBean);
@@ -224,7 +229,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     }
 
     private void showData() {
-        List<GoodsBean> goodsBeanList = CartStorage.getInstance().getAllData();
+       goodsBeanList = CartStorage.getInstance().getAllData();
         tvShopcartEdit.setVisibility(View.VISIBLE);
         Log.i("78787878", "主页数据被初始化了===" + goodsBeanList);
         if (goodsBeanList != null && goodsBeanList.size() > 0) {
@@ -242,10 +247,16 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         }
     }
 
-
     public void onClick(View v) {
 
         if (v == btnCheckOut) {
+                SubmitOrderHttp();
+              Intent intent=new Intent(mContext, ConfirmOrderActivity.class);
+              intent.putExtra("goodsbean", goodsBean);
+              startActivity(intent);
+
+
+
             // CartStorage.getInstance().addData(goodsBean);
             // pay(v);
             // Toast.makeText(mContext,"去结算",Toast.LENGTH_SHORT).show();
@@ -268,42 +279,29 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
         }
     }
-
-   /* private void removeHttp() {
-        datas = CartStorage.getInstance().getAllData();
-        Log.i("26666", "请求数据成功=======" +datas.get(1).isSelected());
-        Log.i("26666", "请求数据成功=======" +datas.get(1));
+    private void SubmitOrderHttp() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 /// Log.i("加入购物车", "请求数据成功=======" + datas);
                 final String token = CacheUtils.getString(MyApplication.getContex(), "token");
-                if(datas!=null&&datas.size()>0){
-                    for(int i=0;i<datas.size();i++){
-                       GoodsBean goodsBean=datas.get(i);
-
-                       if(goodsBean.isSelected()){
-                           Log.i("goods", "请求数据成功=======" + goodsBean);
-
-                           String id = String.valueOf(goodsBean.getGoods_id());
-                           String type =goodsBean.getType();
-                           String url = Constans.REMOVE_URL;
-                           String json = null;
-                           try {
-                               json = Http.post3(id, type, token, url);
-                           } catch (IOException e) {
-                               e.printStackTrace();
-                           }
-                           Log.i("删除", "请求数据成功=======" + json);
-                       }
-
-                    }
+                String id = String.valueOf(goodsBeanList.get(0).getGoods_id());
+                // Log.i("加入购物车id", "请求数据成功=======" + id);
+                String number = String.valueOf(1);
+                // Log.i("加入购物车num", "请求数据成功=======" + number);
+                String type = goodsBeanList.get(0).getType();
+                String url = Constans.SUBMIT_ORDER_URL;
+                try {
+                    String json=  Http.post4(id,type,number,token,url);
+                    Log.i("提交订单", "请求数据成功=======" + json);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
             }
         }).start();
 
-    }*/
+    }
 
     private void initListener() {
         tvShopcartEdit.setTag(ACTION_EDIT);
@@ -358,7 +356,7 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     }
 
-    //@Override
+    @Override
     public void onResume() {
         super.onResume();
         initData();

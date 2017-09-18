@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.hongaer.shoppingmall2.user.view.NickEditActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+       >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           >
+
+            <ImageButton
+                android:id="@+id/ib_goods_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/top_bar_left_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="修改昵称"
+                android:paddingBottom="10dp"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <View
+            android:paddingTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="#11000000" />
+        <EditText
+            android:id="@+id/et_nick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入昵称"/>
+        <Button
+            android:id="@+id/bt_save"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#4c44ed"
+            android:text="保存"
+            android:textColor="#ffffff" />
+</LinearLayout>
+</LinearLayout>

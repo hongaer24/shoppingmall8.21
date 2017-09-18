@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
 import com.example.hongaer.shoppingmall2.type.adapter.TypeLeftAdapter;
-import com.example.hongaer.shoppingmall2.utils.Constans;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -35,9 +34,9 @@ public class ListFragment extends BaseFragment {
     private TextView textView;
     private String[] titles = new String[]{"小裙子", "上衣", "下装", "外套", "配件", "包包", "装扮", "居家宅品", "办公文具", "数码周边", "游戏专区"};
     private TypeLeftAdapter leftAdapter;
-    private String[] urls = new String[]{Constans.SKIRT_URL,Constans.JACKET_URL,Constans.PANTS_URL,Constans.OVERCOAT_URL,
+   /* private String[] urls = new String[]{Constans.SKIRT_URL,Constans.JACKET_URL,Constans.PANTS_URL,Constans.OVERCOAT_URL,
            Constans.ACCESSORY_URL,Constans.BAG_URL,Constans.DRESS_UP_URL,Constans.HOME_PRODUCTS_URL,Constans.STATIONERY_URL,
-           Constans.DIGIT_URL,Constans.GAME_URL};
+           Constans.DIGIT_URL,Constans.GAME_URL};*/
     public View initView() {
         View view = View.inflate(mContext, R.layout.fragment_list, null);
         ButterKnife.bind(this,view);
@@ -60,10 +59,10 @@ public class ListFragment extends BaseFragment {
                 //2.在TypeLeftAdapter getView根据位置中高亮显示代码
                 //3.刷新适配器
                 leftAdapter.notifyDataSetChanged();
-                getDataFromNet(urls[position]);
+                //getDataFromNet(urls[position]);
             }
         });
-          getDataFromNet(urls[0]);
+          //getDataFromNet(urls[0]);
     }
 
     private void getDataFromNet(String url) {

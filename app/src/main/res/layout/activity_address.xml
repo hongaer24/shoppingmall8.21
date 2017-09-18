@@ -87,6 +87,30 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="#eeee" />
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="45dp"
+             android:orientation="horizontal">
+             <TextView
+                 android:id="@+id/consignee_setdefault_txtv"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:gravity="center_vertical|left"
+                 android:textSize="18sp"
+                 android:text="设为默认地址："
+                 android:paddingTop="20dp"
+                 android:paddingLeft="20dp"
+                 android:layout_alignParentLeft="true"
+                 style="@style/textStyle.Normal.black"/>
+                <Switch
+                    android:id="@+id/consignee_setdefault_sth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin_space"/>
+
+         </RelativeLayout>
+
 
         <Button
             android:id="@+id/submit_btn"

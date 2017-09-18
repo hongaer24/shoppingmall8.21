@@ -61,6 +61,27 @@ public class DatasBean {
         private String name;
         private String sell_price;
 
+        public String getSellprice() {
+            return sellprice;
+        }
+
+        public void setSellprice(String sellprice) {
+            this.sellprice = sellprice;
+        }
+
+        private String sellprice;
+        private String sellername;
+
+        public String getSellername() {
+            return sellername;
+        }
+
+        public void setSellername(String sellername) {
+            this.sellername = sellername;
+        }
+
+
+
         public int getId() {
             return id;
         }
