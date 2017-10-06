@@ -2,32 +2,32 @@ package com.example.hongaer.shoppingmall2.user.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.bumptech.glide.Glide;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.app.MainActivity;
 import com.example.hongaer.shoppingmall2.app.MyApplication;
 import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
-import com.example.hongaer.shoppingmall2.shoppingcart.utils.CartStorage;
-import com.example.hongaer.shoppingmall2.shoppingcart.utils.VirtualkeyboardHeight;
-import com.example.hongaer.shoppingmall2.shoppingcart.view.AddSubView;
 import com.example.hongaer.shoppingmall2.utils.CacheUtils;
-import com.example.hongaer.shoppingmall2.utils.Constans;
+import com.example.hongaer.shoppingmall2.utils.Util;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,37 +58,34 @@ public class PositionActivity extends AppCompatActivity {
     @BindView(R.id.bt_loingback)
     Button btLoingback;
     private GoodsBean goodsBean;
+    private static IWXAPI WXapi;
+    private String WX_APP_ID = "wx79b032a2d6f1fc0a";
+    private IWXAPI api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position);
         ButterKnife.bind(this);
-        goodsBean= (GoodsBean) getIntent().getSerializableExtra("goodsBean");
-        if(goodsBean!=null){
+        WXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
+        WXapi.registerApp(WX_APP_ID);
 
-            //Toast.makeText(this,"goodsBean666=="+goodsBean.toString(),Toast.LENGTH_SHORT).show();
-            Log.i("goodsBean66666","======="+goodsBean.toString());
-        }
 
     }
 
-    @OnClick({R.id.ib_goods_back, R.id.tv_IDsafe, R.id.bt_loingback,R.id.tv_xinxi,R.id.tv_for_us})
+    @OnClick({R.id.ib_goods_back, R.id.tv_IDsafe, R.id.bt_loingback,R.id.tv_xinxi,R.id.tv_for_us,R.id.tv_shaerapp})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ib_goods_back:
                 finish();
                 break;
             case R.id.tv_IDsafe:
-               // showPopwindow();
-                //CartStorage.getInstance().addData(goodsBean);
                 Intent intent1=new Intent(PositionActivity.this,IDSafeActivity.class);
                 startActivity(intent1);
                 break;
             case R.id.bt_loingback:
                 CacheUtils.deleteString(MyApplication.getContex());
                Intent intent=new Intent(PositionActivity.this, MainActivity.class);
-                //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("checkid",R.id.rb_user);
                 startActivity(intent);
                 break;
@@ -100,9 +97,89 @@ public class PositionActivity extends AppCompatActivity {
                 Intent intent3=new Intent(this,ForUsActivity.class);
                 startActivity(intent3);
                 break;
+            case R.id.tv_shaerapp:
+                 showPopWindow();
+                //shareText2WX("好人",1);
+
+                break;
         }
     }
-    private void showPopwindow() {
+    private void showPopWindow() {
+        //获取view
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.share_popwindow, null);
+
+        //获取宽高
+        final PopupWindow popupWindow = new PopupWindow(view,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+
+        //设置popWindow弹出窗体可点击
+        popupWindow.setFocusable(true);
+
+        // 实例化一个ColorDrawable颜色为半透明
+        ColorDrawable dw = new ColorDrawable(0xb0000000);
+        popupWindow.setBackgroundDrawable(dw);
+
+        // 设置popWindow的显示和消失动画
+        popupWindow.setAnimationStyle(R.style.share_popWindow_anim_style);
+
+        //在底部显示
+        popupWindow.showAtLocation(PositionActivity.this.findViewById(R.id.ll_position),
+                Gravity.BOTTOM,0,0);
+        ImageButton weichat = (ImageButton) view.findViewById(R.id.ib_weixin);
+        ImageButton friend = (ImageButton) view.findViewById(R.id.ib_friend);
+        TextView cancel=(TextView) view.findViewById(R.id.tv_cancel);
+            weichat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                      shareUrl(1);
+                }
+            });
+
+        friend.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                      shareUrl(0);
+               }
+           });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 popupWindow.dismiss();
+            }
+        });
+
+        //popWindow消失监听方法
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
+            @Override
+            public void onDismiss() {
+                System.out.println("popWindow消失");
+            }
+        });
+    }
+    public  void  shareUrl(int flag){
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = "http://www.jinquemall.com/";
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = "金雀钢城,你值得拥有";
+        msg.description = "金雀钢城，你值得拥有";
+        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+        msg.thumbData = Util.bmpToByteArray(thumb, true);
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = buildTransaction("webpage");
+        req.message = msg;
+        req.scene =flag==0 ? SendMessageToWX.Req.WXSceneTimeline : SendMessageToWX.Req.WXSceneSession;
+        boolean fla = WXapi.sendReq(req);
+        api.sendReq(req);
+    }
+    private String buildTransaction(final String type){
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
+
+   /* private void showPopwindow() {
 
         // 1 利用layoutInflater获得View
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -182,6 +259,6 @@ public class PositionActivity extends AppCompatActivity {
         window.showAtLocation(PositionActivity.this.findViewById(R.id.ll_goods_root),
                 Gravity.BOTTOM, 0, VirtualkeyboardHeight.getBottomStatusHeight(PositionActivity.this));
 
-    }
+    }*/
 
 }

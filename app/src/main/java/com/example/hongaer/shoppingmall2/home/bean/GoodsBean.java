@@ -165,7 +165,7 @@ public class GoodsBean implements Serializable {
     @Override
     public String toString() {
         return "GoodsBean{" +
-                "sellername='" + sellername + '\'' +
+                "sellername=" + sellername +
                 ", name='" + name + '\'' +
                 ", cover_price='" + cover_price + '\'' +
                 ", figure='" + figure + '\'' +

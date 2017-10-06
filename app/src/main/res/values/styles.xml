@@ -98,5 +98,12 @@
         <item name="android:layout_marginLeft">@dimen/tag_common_margin</item>
         <item name="android:textSize">@dimen/textSizeNormal</item>
     </style>
+    <!--  sharePopWindow -->
+    <style name="share_popWindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/popshow_anim</item>
+        <!-- 指定显示的动画xml -->
+        <item name="android:windowExitAnimation">@anim/pophidden_anim</item>
+        <!-- 指定消失的动画xml -->
+    </style>
 
 </resources>

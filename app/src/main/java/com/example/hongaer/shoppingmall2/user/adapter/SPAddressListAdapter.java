@@ -102,6 +102,18 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
         return convertView;
     }
 
+  /*  public void deletePost(){
+        String token= CacheUtils.getString(MyApplication.getContex(),"token");
+        String url= Constans.DELETE_URL;
+        Map<String,String> map=new HashMap<>();
+        map.put("id","1");
+
+        Http.doPost(url);
+
+
+
+    }*/
+
     @Override
     public void onClick(View v) {
         int position = Integer.valueOf(v.getTag().toString());
@@ -112,6 +124,7 @@ public class SPAddressListAdapter extends BaseAdapter implements View.OnClickLis
 
                 if (mAddressListListener!= null)
                     mAddressListListener.onItemDelete(consignee);
+
                 break;
             case R.id.address_edit_btn:
                 if (mAddressListListener!=null)mAddressListListener.onItemEdit( consignee);

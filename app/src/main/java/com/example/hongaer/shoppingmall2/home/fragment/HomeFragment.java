@@ -19,16 +19,10 @@ import com.example.hongaer.shoppingmall2.home.bean.ResultDataBean;
 import com.example.hongaer.shoppingmall2.user.view.PositionActivity;
 import com.example.hongaer.shoppingmall2.utils.Constans;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by hongaer on 2017/7/1.
@@ -65,7 +59,7 @@ public class HomeFragment extends BaseFragment {
          webSettings.setUseWideViewPort(true);
          webSettings.setJavaScriptEnabled(true);
          webview.setWebViewClient(new WebViewClient());
-         webview.loadUrl("http://killsound888.oicp.net:118/jinque/debug/jqmall/");
+         webview.loadUrl(Constans.BASE_URL);
          webview.setWebViewClient(new HelloWebViewClient());
         //Web视图
 
@@ -124,12 +118,12 @@ public class HomeFragment extends BaseFragment {
 */
 
 
-    public void initData()  {
+   /* public void initData()  {
         super.initData();
         Log.e(TAG, "http主页数据被初始化了");
         String reg_url = Constans.SHOPPINGCART_URL;
-         final String token="90498ceb48917654d7116c2a9b8198fb";
-        // final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+         //final String token="90498ceb48917654d7116c2a9b8198fb";
+         final String token = CacheUtils.getString(MyApplication.getContex(), "token");
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody body = new FormBody.Builder().add("token",token).build();
         Request request = new Request.Builder().url(reg_url).post(body).build();
@@ -149,7 +143,7 @@ public class HomeFragment extends BaseFragment {
                               }
             }
         });
-       /* new Thread(new Runnable() {
+       *//* new Thread(new Runnable() {
             @Override
             public void run() {
                 String json= null;
@@ -166,9 +160,9 @@ public class HomeFragment extends BaseFragment {
 
             }
         }).start();
-*/
+*//*
 
-        }
+        }*/
 
 
 

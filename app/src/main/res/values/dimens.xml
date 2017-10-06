@@ -64,6 +64,7 @@
     <dimen name="pickerview_topbar_paddingleft">10dp</dimen>
     <dimen name="pickerview_topbar_paddingright">30dp</dimen>
     <dimen name="pickerview_topbar_title_textsize">21sp</dimen>
+    <dimen name="txt_14">18sp</dimen>
     <!-- From: file:/Users/Sai/Documents/workpace/android/github/Android-PickerView/pickerview/src/main/res/values/integers.xml -->
     <eat-comment/>
 </resources>

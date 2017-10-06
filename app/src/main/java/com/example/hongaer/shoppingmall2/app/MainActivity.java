@@ -4,14 +4,18 @@ package com.example.hongaer.shoppingmall2.app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
@@ -50,6 +54,16 @@ public class MainActivity extends FragmentActivity {
     private String username;
     private Context context;
     private Context mContext;
+    private static boolean isExit = false;
+
+   Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
 
 
     @Override
@@ -78,8 +92,26 @@ public class MainActivity extends FragmentActivity {
 
 
     }
-
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
     private void initfragment() {
         fragments = new ArrayList<>();
         fragments.add(new HomeFragment());

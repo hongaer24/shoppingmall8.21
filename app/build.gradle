@@ -53,31 +53,25 @@ dependencies {
     compile files('src/main/java/libs/android-async-http-1.4.9.jar')
     //compile 'com.android.support:appcompat-v7:23.4.0'
     //compile files('libs/wechat-sdk-android-with-mta-1.0.2.jar')
-    
-
     //支付
     //compile 'com.alibaba.alipay:alipaySingle:20160825@jar'
-
-
-
     //compile 'com.taobao.android:utdid4all:1.1.5.3_proguard@jar'
     //【可选】仅供特殊合作伙伴使用
     // compile 'com.ali.auth.sdk:alibabauth_accountlink:1.1.4@jar'
-
     //【可选】安全高级，如使用了发放红包、优惠券高级功能，则必须引入
     //compile 'com.taobao.android:securitybodyaar3:5.1.25@aar'
     //Mtop网关
-  /*  compile 'com.taobao.android:mtopsdk_allinone_open:1.2.2.4@jar'
-    //applink
-    compile 'com.alibaba.sdk.android:alibc_link_partner:1.1.0.0'
-    UT
-    compile 'com.taobao.android:utdid4all:1.1.5.3_proguard@jar'
-    compile 'com.alibaba.mtl:app-monitor-sdk:2.5.1.3_for_bc_proguard@jar'
-    //联盟SDK
-    compile 'com.alimama.tunion.sdk:tuniontradesdk:0.3.1'*/
+    /*  compile 'com.taobao.android:mtopsdk_allinone_open:1.2.2.4@jar'
+                //applink
+                compile 'com.alibaba.sdk.android:alibc_link_partner:1.1.0.0'
+                UT
+                compile 'com.taobao.android:utdid4all:1.1.5.3_proguard@jar'
+                compile 'com.alibaba.mtl:app-monitor-sdk:2.5.1.3_for_bc_proguard@jar'
+                //联盟SDK
+                compile 'com.alimama.tunion.sdk:tuniontradesdk:0.3.1'*/
     //    fastjson
     //支付
-   // compile 'com.alibaba.alipay:alipaySingle:20160825@jar'
+    // compile 'com.alibaba.alipay:alipaySingle:20160825@jar'
     //【可选】仅供特殊合作伙伴使用
     //登陆
     //安全基础
@@ -86,9 +80,7 @@ dependencies {
     //联盟SDK
     //电商SDK
     //compile 'com.alibaba.sdk.android:alibc_trade_sdk:3.1.1.11@aar'
-    
     //compile 'com.alibaba.mtl:app-monitor-sdk:2.5.1.3_for_bc_proguard@jar'
-
     //UT
     //compile 'com.taobao.android:utdid4all:1.1.5.3_proguard@jar'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -120,6 +112,10 @@ dependencies {
     compile 'com.alibaba.sdk.android:alibc_trade_sdk:3.1.1.203'
     compile 'com.alibaba.mtl:app-monitor-sdk:2.5.1.3_for_bc_proguard@jar'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    compile 'com.taobao.android:utdid4all:1.1.5.3_proguard@jar'
+
+    //compile files('libs/alipaySdk-20170725.jar')
+    compile files('src/main/java/libs/alipaySdk-20170725.jar')
 }
 
 /*buildscript {

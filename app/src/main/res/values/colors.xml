@@ -14,4 +14,9 @@
     <color name="bg_view">#ffffffff</color>
     <color name="bg_header">#fff8f8f8</color>
     <color name="sub_title">#848689</color>//副标题文本颜色
+    <color name="menu_item_press">#2e000000</color>
+    <color name="grey_color2">#666666</color>
+    <color name="crimson">#dc143c</color> // 深红
+    <color name="orange">#fd7903</color>
+    <!-- 橙色 -->
 </resources>

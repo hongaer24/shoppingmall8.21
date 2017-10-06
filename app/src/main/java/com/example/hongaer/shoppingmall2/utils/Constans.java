@@ -21,21 +21,27 @@ public class Constans {
     //public  static  String LOGIN_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=login_act";
      //主页接口
     public static String BASE_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/";
+    //public static String BASE_URL = "http://www.jinquemall.com";
+    //分类接口
+    public static String TYPE_URL = BASE_URL+"/index.php?controller=site&action=sitemap";
+    //public static String BASE_NEW_URL = "www.jinquemall.com";
     //修改密码接口
     public static String PASSWORD_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=password_edit";
     //省市区接口
     public static String ADRRES_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=block_app&action=area_list";
     //购物车列表接口
     public static String SHOPPINGCART_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=showCart";
+
+    public static String SHOPPINGCART_NEW_URL = BASE_URL+"/jinque/debug/jqmall/index.php?controller=cart_app&action=showCart";
     //登录接口
-    public static String LOGIN_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=login_act";
+    public static String LOGIN_URL = BASE_URL+"index.php?controller=simple_app&action=login_act";
     // public  static  String MSG_URL= "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&moblie=18502502014";
     //验证码接口
-    public static String MSG_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&mobile=18502502014";
+    public static String MSG_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_moblie_msg&mobile=";
     //注册接口
     public static String reg_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=reg_act";
     //找回密码
-    public static String SEND_MESSAGE__URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=send_message_mobile&mobile=18502502014";
+    public static String SEND_MESSAGE__URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=send_message_mobile&mobile=";
     //找回密码修改接口
     public static String FIND_PASSWOED__URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=simple_app&action=find_password_mobile";
     //加入购物车接口
@@ -43,12 +49,19 @@ public class Constans {
     //删除商品接口
     public static String REMOVE_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=removeCart";
      //提交订单接口
-     public static String SUBMIT_ORDER_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=order_app&action=cart_order";
+     public static String SUBMIT_ORDER_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=cart_app&action=cart_order";
+    //支付宝接口
+    public static String ALIPAY_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=pay_app&action=alipay";
+    //收货地址增加和修改接口
+    public static String ADDRESS_EDIT_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=ucenter_app&action=address_edit";
+    //删除地址接口
+    public static String ADDRESS_DELETE_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=ucenter_app&action=address_del";
+    //收货地址接口
+    public static String ADDRESS_GET_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=ucenter_app&action=address";
+
     /**
      * 图片路径
      */
-
-
     public static String BASE_URL_IMAGES = BASE_URL + "/img";
 
     //public  static  String BASE_URL_IMAGES=BASE_URL+"/img";

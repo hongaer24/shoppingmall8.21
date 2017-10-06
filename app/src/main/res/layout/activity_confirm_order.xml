@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.hongaer.shoppingmall2.shoppingcart.view.ConfirmOrderActivity">
 
- <LinearLayout
+     <LinearLayout
      android:layout_width="match_parent"
      android:layout_height="match_parent"
      android:orientation="vertical">
@@ -35,9 +36,10 @@
          android:layout_width="match_parent"
          android:layout_height="18dp"
          android:background="#11000000" />
-     <FrameLayout
+
+    <FrameLayout
          android:layout_width="match_parent"
-         android:layout_height="65dip">
+         android:layout_height="60dip">
      <ImageView
          android:layout_marginLeft="@dimen/margin_space"
          android:layout_marginBottom="@dimen/margin_space"
@@ -84,11 +86,71 @@
                 android:background="@drawable/home_arrow_right"
                android:layout_gravity="right|center_vertical"/>
      </FrameLayout>
-     <android.support.v7.widget.RecyclerView
-         android:id="@+id/recyclerview"
-         android:layout_width="match_parent"
-         android:layout_weight="1"
-         android:layout_height="0dp"
-         android:background="#eee" />
- </LinearLayout>
-</LinearLayout>
+
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="6dp"
+           android:background="#11000000" />
+
+      <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="420dip">
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+              <ExpandableListView
+                  android:id="@+id/exListView"
+                  android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+                  android:childIndicator="@null"
+                  android:groupIndicator="@null" >
+              </ExpandableListView>
+
+          </LinearLayout>
+         </FrameLayout>
+
+              <LinearLayout
+                  android:id="@+id/ll_check_all"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="#fff"
+                  android:orientation="horizontal"
+                  android:visibility="visible">
+
+                  <TextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:padding="10dp"
+                      android:layout_marginLeft="110dp"
+                      android:text="实付:"
+                      android:textColor="#303235"
+                      android:textSize="15sp" />
+                  <TextView
+                      android:id="@+id/tv_shopcart_total"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:padding="10dp"
+                      android:layout_marginLeft="20dp"
+                      android:text="￥0.00"
+                      android:textColor="#ed3f3f"
+                      android:textSize="15sp" />
+                  <Button
+                      android:id="@+id/btn_check_out"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:background="#ed3f3f"
+                      android:text="提交订单"
+                      android:textColor="#fff" />
+
+              </LinearLayout>
+          </LinearLayout>
+
+
+
+     </LinearLayout>
+
+
+

@@ -147,7 +147,6 @@ public class FindPasswordActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
 
-
             }
 
             @Override
@@ -155,18 +154,19 @@ public class FindPasswordActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
                     Log.i("hong888", "重置成功======" + json);
-
                     LoginBean loginBean = JSON.parseObject(json, LoginBean.class);
                     final int staus = loginBean.getStatus();
                     // String username=loginBean.getUsername();
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (staus == 1) {
                                 Toast.makeText(FindPasswordActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                                 finish();
-                            } else {
+                            } else if(staus==0){
+                                Toast.makeText(FindPasswordActivity.this, "验证码时间间隔过短", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
 
                                 Toast.makeText(FindPasswordActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
                             }
@@ -180,11 +180,12 @@ public class FindPasswordActivity extends AppCompatActivity {
     }
 
     private void getHttp() {
+        final String new_url=url+phoneNumber;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String msg_data_json = Http.get(url);
+                    String msg_data_json = Http.get(new_url);
                     Log.i("msg666", "请求数据成功=======" + msg_data_json);
 
                     PasswordBean passwordBean = JSON.parseObject(msg_data_json, PasswordBean.class);

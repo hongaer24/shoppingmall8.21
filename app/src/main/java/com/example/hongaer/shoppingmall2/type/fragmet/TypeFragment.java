@@ -7,6 +7,7 @@ import android.webkit.WebViewClient;
 
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
+import com.example.hongaer.shoppingmall2.utils.Constans;
 
 import butterknife.ButterKnife;
 
@@ -38,7 +39,8 @@ public class TypeFragment extends BaseFragment {
         webSettings.setUseWideViewPort(true);
         webSettings.setJavaScriptEnabled(true);
         webview.setWebViewClient(new WebViewClient());
-        webview.loadUrl( "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=site&action=sitemap");
+        //webview.loadUrl( "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=site&action=sitemap&access_type=app&token=fdfsdfsffsfsf");
+        webview.loadUrl(Constans.TYPE_URL);
         webview.setWebViewClient(new HelloWebViewClient());
         //Web视图
 

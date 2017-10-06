@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="共计2件商品"
-            android:layout_marginLeft="140dp"
+            android:layout_marginLeft="90dp"
             android:textSize="20sp"/>
 
         <TextView

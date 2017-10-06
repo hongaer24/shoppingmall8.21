@@ -49,8 +49,8 @@ public class AddressStorage {
 
                 consignee = spConsigneeAddressBeanList.get(i);
                 Log.i("6666","空指针的地方=="+spConsigneeAddressBeanList.get(i));
-                if(consignee.getMobile()!=null){
-                    sparseArray.put((int) Long.parseLong(consignee.getMobile()), consignee);
+                if(consignee.getAddress()!=null){
+                    sparseArray.put((int) Long.parseLong(consignee.getAddressID()), consignee);
 
                 }
                 //sparseArray.put(Integer.parseInt(consignee.getProduct_id()), consignee);
@@ -79,7 +79,7 @@ public class AddressStorage {
         Log.i("110110","空指针的地方=="+consignee);
        // consignee tempData = sparseArray.get(Integer.parseInt(consignee.getProduct_id()));
       try {
-          SPConsigneeAddressBean tempData = sparseArray.get((int) Long.parseLong(consignee.getMobile()));
+          SPConsigneeAddressBean tempData = sparseArray.get((int) Long.parseLong(consignee.getAddressID()));
           if (tempData != null) {
               // 内存中有了这条数据
               //  tempData.setNumber(tempData.getNumber() + 1);
@@ -90,7 +90,7 @@ public class AddressStorage {
           }
           //同步到内存中
           //sparseArray.put(Integer.parseInt(tempData.getProduct_id()), tempData);
-          sparseArray.put((int) Long.parseLong(tempData.getMobile()), tempData);
+          sparseArray.put((int) Long.parseLong(tempData.getAddressID()), tempData);
 
           //2.同步到本地
           saveLocal();
@@ -101,14 +101,15 @@ public class AddressStorage {
     public void deleteData(SPConsigneeAddressBean consignee) {
         //1.从内存中删除
      // sparseArray.delete(Integer.parseInt( consignee.getProduct_id()));
-        sparseArray.delete((int) Long.parseLong(consignee.getMobile()));
+        sparseArray.delete((int) Long.parseLong(consignee.getAddressID()));
+
         //2.把内存数据保存到本地
         saveLocal();
     }
     //修改数据
     public void updataData(SPConsigneeAddressBean consignee) {
 
-      sparseArray.put((int) Long.parseLong(consignee.getMobile()), consignee);
+      sparseArray.put((int) Long.parseLong(consignee.getAddressID()), consignee);
        saveLocal();
     }
 

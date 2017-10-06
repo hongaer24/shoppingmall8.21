@@ -60,21 +60,30 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+             tools:replace="android:configChanges"/>
+
+        <activity
+            android:name="com.alipay.sdk.app.H5AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            tools:replace="android:configChanges"/>
+
+        <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".app.GoodsInfoActivity" />
         <activity android:name=".app.GuideActivity" />
         <activity android:name=".app.LoginActivity" />
-        <!-- alipay sdk begin -->
-        <!--
-            <activity
-            android:name="com.alipay.sdk.app.H5PayActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:exported="false"
-            android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        -->
+        <activity android:name=".shoppingcart.pay.PayActivity" />
+
 
 
         <!-- QQ登录配置 end -->
@@ -88,7 +97,6 @@
         <activity android:name=".user.view.Position2Activity" />
         <activity android:name=".user.view.address.AddressActivity" />
         <activity android:name=".user.view.address.AddressListActivity" />
-        <activity android:name=".user.view.address.AddressEditActivity" />
         <activity android:name=".user.view.FindPasswordActivity" />
         <activity android:name=".shoppingcart.view.ConfirmOrderActivity" />
         <activity android:name=".user.view.PersonActivity" />

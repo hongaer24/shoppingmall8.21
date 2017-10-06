@@ -1,51 +1,54 @@
 package com.example.hongaer.shoppingmall2.shoppingcart.fragmet;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.BaseBundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.alipay.sdk.app.PayTask;
 import com.example.hongaer.shoppingmall2.R;
-import com.example.hongaer.shoppingmall2.app.MainActivity;
 import com.example.hongaer.shoppingmall2.app.MyApplication;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
 import com.example.hongaer.shoppingmall2.home.bean.DatasBean;
 import com.example.hongaer.shoppingmall2.home.bean.GoodsBean;
 import com.example.hongaer.shoppingmall2.home.bean.ResultDataBean;
 import com.example.hongaer.shoppingmall2.shoppingcart.adapter.ShoppingCartAdapter;
-import com.example.hongaer.shoppingmall2.shoppingcart.pay.PayResult;
-import com.example.hongaer.shoppingmall2.shoppingcart.pay.SignUtils;
+import com.example.hongaer.shoppingmall2.shoppingcart.bean.StoreBean;
 import com.example.hongaer.shoppingmall2.shoppingcart.utils.CartStorage;
 import com.example.hongaer.shoppingmall2.shoppingcart.view.ConfirmOrderActivity;
 import com.example.hongaer.shoppingmall2.utils.CacheUtils;
 import com.example.hongaer.shoppingmall2.utils.Constans;
 import com.example.hongaer.shoppingmall2.utils.Http;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -53,108 +56,84 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+
 /**
  * Created by hongaer on 2017/7/1.
  */
 
-public class ShoppingCartFragment extends BaseFragment implements View.OnClickListener {
+public class ShoppingCartFragment extends BaseFragment implements View.OnClickListener, ShoppingCartAdapter.CheckInterface, ShoppingCartAdapter.ModifyCountInterface, ShoppingCartAdapter.GroupEdtorListener {
     public static final int JSON_FLAG = 2;
-    private TextView tvShopcartEdit;
-    private RecyclerView recyclerview;
-    private LinearLayout llCheckAll;
-    private CheckBox checkboxAll;
-    private TextView tvShopcartTotal;
-    private Button btnCheckOut;
-    private LinearLayout llDelete;
-    private TextView textView;
-    private CheckBox cbAll;
-    private Button btnDelete;
-    private Button btnCollection;
-    private ImageView ivEmpty;
-    private TextView tvEmptyCartTobuy;
-    private LinearLayout ll_empty_shopcart;
+    private static final int SDK_PAY_FLAG = 1;
+    private static final int SDK_AUTH_FLAG = 3;
+    @BindView(R.id.tv_title1)
+    TextView tvTitle;
+    @BindView(R.id.tv_shopcart_edit)
+    TextView tvShopcartEdit;
+    @BindView(R.id.exListView)
+    ExpandableListView exListView;
+    @BindView(R.id.checkbox_all)
+    CheckBox checkboxAll;
+    @BindView(R.id.tv_shopcart_total)
+    TextView tvShopcartTotal;
+    @BindView(R.id.btn_check_out)
+    Button btnCheckOut;
+    @BindView(R.id.ll_info)
+    LinearLayout llInfo;
+    @BindView(R.id.tv_save)
+    TextView tvSave;
+    @BindView(R.id.tv_delete)
+    TextView tvDelete;
+    @BindView(R.id.ll_shar)
+    LinearLayout llShar;
+    @BindView(R.id.ll_cart)
+    LinearLayout llCart;
+    Unbinder unbinder;
+    @BindView(R.id.layout_cart_empty)
+    LinearLayout cart_empty;
     private ShoppingCartAdapter adapter;
-    private static final int ACTION_EDIT = 1;
-    private static final int ACTION_COMPLETE = 2;
-   // public String url = Constans.HOME_URLS;
     private ResultDataBean.ResultBean resultbean;
-    private RecyclerView recyclerView;
+    //private RecyclerView recyclerView;
     private GoodsBean goodsBean;
+    private List<String> storeNameList = new ArrayList<>();
+    private List<StoreBean> groups = new ArrayList<StoreBean>();
+    private Map<String, List<GoodsBean>> children = new HashMap<String, List<GoodsBean>>();
     private List<DatasBean.DataBean> bean;
     private List<GoodsBean> goodsBeanList;
-    //private List<GoodsBean> datas;
-    // private List<GoodsBean> goodsBeanList;
+    private StoreBean tempData;
+    private int tempbean;
+    private SparseArray<StoreBean> sparseArray;
+    Set<String> storeSet = new HashSet<String>();
+    private StoreBean storeBean;
+    private int flag = 0;
+    private double totalPrice = 0.00;// 购买的商品总价
+    private int totalCount = 0;// 购买的商品总数量
+    private boolean flag2 = true;
+    private BaseBundle bundle;
 
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.fragment_shopping_cart, null);
-        tvShopcartEdit = (TextView) view.findViewById(R.id.tv_shopcart_edit);
-        recyclerview = (RecyclerView) view.findViewById(R.id.recyclerview);
-        llCheckAll = (LinearLayout) view.findViewById(R.id.ll_check_all);
-        checkboxAll = (CheckBox) view.findViewById(R.id.checkbox_all);
-        tvShopcartTotal = (TextView) view.findViewById(R.id.tv_shopcart_total);
-        btnCheckOut = (Button) view.findViewById(R.id.btn_check_out);
-        llDelete = (LinearLayout) view.findViewById(R.id.ll_delete);
-        cbAll = (CheckBox) view.findViewById(R.id.cb_all);
-        btnDelete = (Button) view.findViewById(R.id.btn_delete);
-        btnCollection = (Button) view.findViewById(R.id.btn_collection);
-        ivEmpty = (ImageView) view.findViewById(R.id.iv_empty);
-        tvEmptyCartTobuy = (TextView) view.findViewById(R.id.tv_empty_cart_tobuy);
-        ll_empty_shopcart = (LinearLayout) view.findViewById(R.id.ll_empty_shopcart);
+        ButterKnife.bind(this, view);
+        String token = CacheUtils.getString(MyApplication.getContex(), "token");
+        if (!token.isEmpty()) {
+            initData();
+        } else {
+            clearCart();
+        }
 
-        btnCheckOut.setOnClickListener(this);
-        btnDelete.setOnClickListener(this);
-        btnCollection.setOnClickListener(this);
-        tvEmptyCartTobuy.setOnClickListener(this);
-        initListener();
-        //initData();
-        // goodsBean= (GoodsBean) getIntent().getSerializableExtra("goodsBean");
 
         return view;
     }
 
     private Handler mHandler = new Handler() {
-
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((String) msg.obj);
-                    /**
-                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
-                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
-                     * docType=1) 建议商户依赖异步通知
-                     */
-                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-
-                    String resultStatus = payResult.getResultStatus();
-                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        Toast.makeText(mContext, "支付成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // 判断resultStatus 为非"9000"则代表可能支付失败
-                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-                        if (TextUtils.equals(resultStatus, "8000")) {
-                            Toast.makeText(mContext, "支付结果确认中", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-                            Toast.makeText(mContext, "支付失败", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                    break;
-                }
                 case JSON_FLAG:
-                    // List<GoodsBean> goodsBeanList= (List<GoodsBean>) msg.obj;
                     showData();
-                   // initData();
                     break;
-                //default:
-
             }
         }
 
-        ;
     };
 
     public void initData() {
@@ -162,9 +141,8 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
         //Log.e("6666", "请求数据成功=======888888" );
         String reg_url = Constans.SHOPPINGCART_URL;
-        // final String token="90498ceb48917654d7116c2a9b8198fb";
         final String token = CacheUtils.getString(MyApplication.getContex(), "token");
-        Log.e("6666888", "请求数据成功======="+token );
+        Log.e("6666888", "请求数据成功=======" + token);
         OkHttpClient okHttpClient = new OkHttpClient();
         FormBody body = new FormBody.Builder().add("token", token).build();
         Request request = new Request.Builder().url(reg_url).post(body).build();
@@ -179,121 +157,351 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String json = response.body().string();
-                    Log.i("tag22233333", "请求数据成功=======" + json);
+                    Log.i("tag666", "请求数据成功=======" + json);
 
-                   // Log.i("tag22233333", "请求数据成功=======" + token);
+                    // Log.i("tag22233333", "请求数据成功=======" + token);
                     // processData(json);
                     //List<GoodsBean> goodsBeanList = processData(json);
                     processData(json);
+                    intDatas();
                     mHandler.sendEmptyMessage(JSON_FLAG);
-                    /*Message msg=new Message();
-                    msg.what=JSON_FLAG;
-                    msg.obj=goodsBeanList;*/
-
-
+                    Message msg = new Message();
+                    msg.what = JSON_FLAG;
+                    msg.obj = goodsBeanList;
 
                 }
             }
         });
 
 
-
     }
 
     private void processData(String json) {
+
+
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray jsonArray = jsonObject.optJSONArray("data");
+            // Log.i("22233333", "请求数据成功=======" + jsonArray);
+            if (jsonArray != null && jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject nameObject = jsonArray.optJSONObject(i);
+                    String storeName = nameObject.getString("sellername");
+                    storeSet.add(storeName);
+                    Log.i("22233333", "请求数据成功=======" + storeSet.size());
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         DatasBean dataBean = JSON.parseObject(json, DatasBean.class);
         bean = dataBean.getData();
-        //bean.get(0).getName()
-        //goodsBeanList = new Gson().fromJson(json, new TypeToken<List<GoodsBean>>() {}.getType());
-        //List<GoodsBean> goodsBeanList=new ArrayList<>();
         if (bean != null && bean.size() > 0) {
             for (int i = 0; i < bean.size(); i++) {
                 DatasBean.DataBean datasbean = bean.get(i);
-                goodsBean=new GoodsBean();
+                goodsBean = new GoodsBean();
                 goodsBean.setName(datasbean.getName());
                 goodsBean.setSellername(datasbean.getSellername());
                 goodsBean.setCover_price(datasbean.getSellprice());
                 goodsBean.setFigure(datasbean.getImg());
                 goodsBean.setGoods_id(datasbean.getId());
                 goodsBean.setType(datasbean.getType());
+
                 Log.i("tag22233333", "请求数据成功=======" + goodsBean);
                 CartStorage.getInstance().addData(goodsBean);
 
-                //goodsBeanList.add(goodsBean);
-                //CartStorage.getInstance().addData(goodsBean);
-                // Log.i("token222666","请求数据成功======="+goodsBeanList);
             }
-            //Log.i("token22233333","请求数据成功======="+goodsBeanList);
         }
-        // return  goodsBeanList;
+
+    }
+
+    private void intDatas() {
+        Set<StoreBean> hashSet = new HashSet<StoreBean>();
+        Iterator it = storeSet.iterator();
+        while (it.hasNext()) {
+            Object obj = it.next();
+            storeBean = new StoreBean(obj.toString());
+            hashSet.add(storeBean);
+        }
+        groups = new ArrayList<>(hashSet);
+        List<GoodsBean> goodsBeanList = CartStorage.getInstance().getAllData();
+        List<Map> list = new ArrayList<>();
+        for (int i = 0; i < goodsBeanList.size(); i++) {
+            Map map = new HashMap();
+            GoodsBean goodsBean = goodsBeanList.get(i);
+            map.put(goodsBean.getSellername(), goodsBean);
+            list.add(map);
+
+        }
+        Map<String, List<GoodsBean>> m = mapCombine(list);
+        // Log.i("888", "请求数据成功=======" + newList);
+        Set<String> keyset = m.keySet();
+        for (String key : keyset) {
+            children.put(key, m.get(key));
+
+        }
+    }
+
+    public Map mapCombine(List<Map> list) {
+        Map<Object, List> map = new HashMap<>();
+        for (Map m : list) {
+            Iterator it = m.keySet().iterator();
+            while (it.hasNext()) {
+                Object key = it.next();
+                if (!map.containsKey(key)) {
+                    List newList = new ArrayList<>();
+                    newList.add(m.get(key));
+                    map.put(key, newList);
+                } else {
+                    map.get(key).add(m.get(key));
+                }
+            }
+
+        }
+
+        return map;
     }
 
     private void showData() {
-       goodsBeanList = CartStorage.getInstance().getAllData();
-        tvShopcartEdit.setVisibility(View.VISIBLE);
-        Log.i("78787878", "主页数据被初始化了===" + goodsBeanList);
-        if (goodsBeanList != null && goodsBeanList.size() > 0) {
-            //有数据隐藏
-            llCheckAll.setVisibility(View.VISIBLE);
-            ll_empty_shopcart.setVisibility(View.GONE);
-            adapter = new ShoppingCartAdapter(mContext, goodsBeanList, tvShopcartTotal, checkboxAll, cbAll);
-            recyclerview.setAdapter(adapter);
-            recyclerview.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        }
-        else {
-            // 没数据显示
-            emptyShoppingCart();
-
-        }
-    }
-
-    public void onClick(View v) {
-
-        if (v == btnCheckOut) {
-                SubmitOrderHttp();
-              Intent intent=new Intent(mContext, ConfirmOrderActivity.class);
-              intent.putExtra("goodsbean", goodsBean);
-              startActivity(intent);
-
-
-
-            // CartStorage.getInstance().addData(goodsBean);
-            // pay(v);
-            // Toast.makeText(mContext,"去结算",Toast.LENGTH_SHORT).show();
-            // Handle clicks for btnCheckOut
-        } else if (v == btnDelete) {
-            //removeHttp();
-            adapter.removeHttp();
-            //adapter.deleteData();
-            //adapter.checkAll();
-            if (adapter.getItemCount() == 0) {
-                emptyShoppingCart();
+        if (groups != null && children != null && groups.size() > 0 && children.size() > 0) {
+            adapter = new ShoppingCartAdapter(mContext, groups, children, tvShopcartTotal, checkboxAll);
+            adapter.setCheckInterface(this);// 关键步骤1,设置复选框接口
+            adapter.setModifyCountInterface(this);// 关键步骤2,设置数量增减接口
+            adapter.setmListener(this);
+            exListView.setAdapter(adapter);
+            for (int i = 0; i < adapter.getGroupCount(); i++) {
+                exListView.expandGroup(i);// 关键步骤3,初始化时，将ExpandableListView以展开的方式呈现
             }
-            // Handle clicks for btnDelete
-        } else if (v == btnCollection) {
-            // Handle clicks for btnCollection
-        } else if (v == tvEmptyCartTobuy) {
-            Intent intent = new Intent(mContext, MainActivity.class);
-            intent.putExtra("checkid", R.id.rb_home);
-            startActivity(intent);
-
         }
     }
-    private void SubmitOrderHttp() {
+
+
+    /**
+     * 设置购物车产品数量
+     */
+    private void setCartNum() {
+        int count = 0;
+        for (int i = 0; i < groups.size(); i++) {
+            groups.get(i).setChoosed(checkboxAll.isChecked());
+            StoreBean group = groups.get(i);
+            List<GoodsBean> childs = children.get(group.getName());
+            for (GoodsBean goodsBean : childs) {
+                count += 1;
+            }
+        }
+
+        //购物车已清空
+        if (count == 0) {
+            clearCart();
+        } else {
+            tvTitle.setText("购物车" + "(" + count + ")");
+        }
+    }
+
+    private void clearCart() {
+        tvTitle.setText("购物车" + "(" + 0 + ")");
+        tvShopcartEdit.setVisibility(View.GONE);
+        llCart.setVisibility(View.GONE);
+        cart_empty.setVisibility(View.VISIBLE);
+    }
+
+    protected void doDelete() {
+        List<StoreBean> toBeDeleteGroups = new ArrayList<StoreBean>();// 待删除的组元素列表
+        for (int i = 0; i < groups.size(); i++) {
+            StoreBean group = groups.get(i);
+            if (group.isChoosed()) {
+                toBeDeleteGroups.add(group);
+            }
+            List<GoodsBean> toBeDeleteProducts = new ArrayList<GoodsBean>();// 待删除的子元素列表
+            List<GoodsBean> childs = children.get(group.getName());
+            for (int j = 0; j < childs.size(); j++) {
+                if (childs.get(j).isSelected()) {
+                    toBeDeleteProducts.add(childs.get(j));
+                }
+            }
+            childs.removeAll(toBeDeleteProducts);
+        }
+        groups.removeAll(toBeDeleteGroups);
+        //记得重新设置购物车
+        setCartNum();
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void doIncrease(int groupPosition, int childPosition,
+                           View showCountView, boolean isChecked) {
+        GoodsBean product = (GoodsBean) adapter.getChild(groupPosition,
+                childPosition);
+        int currentCount = product.getNumber();
+        currentCount++;
+        product.setNumber(currentCount);
+        ((TextView) showCountView).setText(currentCount + "");
+        adapter.notifyDataSetChanged();
+        calculate();
+        addPostHttp(product);
+    }
+
+    @Override
+    public void doDecrease(int groupPosition, int childPosition,
+                           View showCountView, boolean isChecked) {
+
+        GoodsBean product = (GoodsBean) adapter.getChild(groupPosition,
+                childPosition);
+        int currentCount = product.getNumber();
+        if (currentCount == 1)
+            return;
+        currentCount--;
+        product.setNumber(currentCount);
+        ((TextView) showCountView).setText(currentCount + "");
+        adapter.notifyDataSetChanged();
+        calculate();
+        subPostHttp(product);
+    }
+
+    @Override
+    public void childDelete(int groupPosition, int childPosition) {
+
+        GoodsBean product = (GoodsBean) adapter.getChild(groupPosition,
+                childPosition);
+        children.get(groups.get(groupPosition).getName()).remove(childPosition);
+
+        StoreBean group = groups.get(groupPosition);
+        List<GoodsBean> childs = children.get(group.getName());
+
+        if (childs.size() == 0) {
+            groups.remove(groupPosition);
+        }
+        adapter.notifyDataSetChanged();
+        // handler.sendEmptyMessage(0);
+        calculate();
+        removeHttp(product);
+
+    }
+
+    @Override
+    public void checkGroup(int groupPosition, boolean isChecked) {
+        StoreBean group = groups.get(groupPosition);
+        List<GoodsBean> childs = children.get(group.getName());
+        for (int i = 0; i < childs.size(); i++) {
+            childs.get(i).setSelected(isChecked);
+        }
+        if (isAllCheck())
+            checkboxAll.setChecked(true);
+        else
+            checkboxAll.setChecked(false);
+        adapter.notifyDataSetChanged();
+        calculate();
+    }
+
+    @Override
+    public void checkChild(int groupPosition, int childPosiTion,
+                           boolean isChecked) {
+        boolean allChildSameState = true;// 判断改组下面的所有子元素是否是同一种状态
+        StoreBean group = groups.get(groupPosition);
+        List<GoodsBean> childs = children.get(group.getName());
+        for (int i = 0; i < childs.size(); i++) {
+            // 不全选中
+            if (childs.get(i).isSelected() != isChecked) {
+                allChildSameState = false;
+                break;
+            }
+        }
+        //获取店铺选中商品的总金额
+        if (allChildSameState) {
+            group.setChoosed(isChecked);// 如果所有子元素状态相同，那么对应的组元素被设为这种统一状态
+        } else {
+            group.setChoosed(false);// 否则，组元素一律设置为未选中状态
+        }
+
+        if (isAllCheck()) {
+            checkboxAll.setChecked(true);// 全选
+        } else {
+            checkboxAll.setChecked(false);// 反选
+        }
+        adapter.notifyDataSetChanged();
+        calculate();
+
+    }
+
+    @Override
+    public void groupEdit(int groupPosition) {
+        groups.get(groupPosition).setIsEdtor(true);
+        adapter.notifyDataSetChanged();
+    }
+
+    private boolean isAllCheck() {
+
+        for (StoreBean group : groups) {
+            if (!group.isChoosed())
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * 全选与反选
+     */
+    private void doCheckAll() {
+        for (int i = 0; i < groups.size(); i++) {
+            groups.get(i).setChoosed(checkboxAll.isChecked());
+            StoreBean group = groups.get(i);
+            List<GoodsBean> childs = children.get(group.getName());
+            for (int j = 0; j < childs.size(); j++) {
+                childs.get(j).setSelected(checkboxAll.isChecked());
+            }
+        }
+        adapter.notifyDataSetChanged();
+        calculate();
+    }
+
+    /**
+     * 统计操作<br>
+     * 1.先清空全局计数器<br>
+     * 2.遍历所有子元素，只要是被选中状态的，就进行相关的计算操作<br>
+     * 3.给底部的textView进行数据填充
+     */
+    private void calculate() {
+        totalCount = 0;
+        totalPrice = 0.00;
+        for (int i = 0; i < groups.size(); i++) {
+            StoreBean group = groups.get(i);
+            List<GoodsBean> childs = children.get(group.getName());
+            for (int j = 0; j < childs.size(); j++) {
+                GoodsBean product = childs.get(j);
+                if (product.isSelected()) {
+                    totalCount++;
+                    totalPrice += Double.valueOf(product.getCover_price()) * Double.valueOf(product.getNumber());
+                }
+            }
+        }
+
+        tvShopcartTotal.setText("￥" + totalPrice);
+        btnCheckOut.setText("去支付(" + totalCount + ")");
+        //计算购物车的金额为0时候清空购物车的视图
+        if (totalCount == 0) {
+            setCartNum();
+        } else {
+            tvTitle.setText("购物车" + "(" + totalCount + ")");
+        }
+    }
+
+    private void addPostHttp(final GoodsBean goodsBean) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 /// Log.i("加入购物车", "请求数据成功=======" + datas);
                 final String token = CacheUtils.getString(MyApplication.getContex(), "token");
-                String id = String.valueOf(goodsBeanList.get(0).getGoods_id());
+                String id = String.valueOf(goodsBean.getGoods_id());
                 // Log.i("加入购物车id", "请求数据成功=======" + id);
                 String number = String.valueOf(1);
                 // Log.i("加入购物车num", "请求数据成功=======" + number);
-                String type = goodsBeanList.get(0).getType();
-                String url = Constans.SUBMIT_ORDER_URL;
+                String type = goodsBean.getType();
+                String url = Constans.JOIN_CART_URL;
                 try {
-                    String json=  Http.post4(id,type,number,token,url);
-                    Log.i("提交订单", "请求数据成功=======" + json);
+                    String json = Http.post4(id, type, number, token, url);
+                    Log.i("加入购物车", "请求数据成功=======" + json);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -303,222 +511,209 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
 
     }
 
-    private void initListener() {
-        tvShopcartEdit.setTag(ACTION_EDIT);
-        tvShopcartEdit.setOnClickListener(new View.OnClickListener() {
+    private void subPostHttp(final GoodsBean goodsBean) {
+        new Thread(new Runnable() {
             @Override
-            public void onClick(View v) {
-                //1.得到状态
-                int action = (int) v.getTag();
-                //2.根据不同状态来处理
-                if (action == ACTION_EDIT) {
-                    //切换为完成状态
-                    showDelete();
-                } else {
-                    //切换成编辑状态
-                    hideDelete();
+            public void run() {
+                /// Log.i("加入购物车", "请求数据成功=======" + datas);
+                final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+                String id = String.valueOf(goodsBean.getGoods_id());
+                // Log.i("加入购物车id", "请求数据成功=======" + id);
+                String number = String.valueOf(-1);
+                // Log.i("加入购物车num", "请求数据成功=======" + number);
+                String type = goodsBean.getType();
+                String url = Constans.JOIN_CART_URL;
+                try {
+                    String json = Http.post4(id, type, number, token, url);
+                    Log.i("6968", "请求数据成功=======" + json);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
             }
+        }).start();
+
+    }
+
+    public void removeHttp(final GoodsBean goodsBean) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                /// Log.i("加入购物车", "请求数据成功=======" + datas);
+                final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+                String id = String.valueOf(goodsBean.getGoods_id());
+                String type = goodsBean.getType();
+                String url = Constans.REMOVE_URL;
+
+                try {
+                    String json = Http.post3(id, type, token, url);
+                    Log.i("888888", "请求数据成功=======" + json);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }).start();
+
+
+    }
+
+    private void SubmitOrderHttp() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                /// Log.i("加入购物车", "请求数据成功=======" + datas);
+                final String token = CacheUtils.getString(MyApplication.getContex(), "token");
+                String id = "{\"goods\":{\"43\":1},\"product\":{}}";
+                // Log.i("加入购物车id", "请求数据成功=======" + id);
+                String number = "任意";
+                // Log.i("加入购物车num", "请求数据成功=======" + number);
+                String type = String.valueOf(1);
+                String url = Constans.SUBMIT_ORDER_URL;
+                try {
+                    String json = Http.post4(id, type, number, token, url);
+                    Log.i("提交订单", "请求数据成功=======" + json);
+                    Log.i("提交订单", "请求数据成功=======" + token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
+    }
+
+    private void orderHttp() {
+        String token = CacheUtils.getString(MyApplication.getContex(), "token");
+        String url = Constans.SUBMIT_ORDER_URL;
+        int id = goodsBean.getGoods_id();
+        //int number = goodsBean
+        Map<String, String> map = new HashMap<>();
+       /* map.put("id","1");
+        map.put("acceptname","小吴");
+        map.put("province","海南");
+        map.put("city","海南");
+        map.put("area","美兰");
+        map.put("tel","110");
+        map.put("mobie","110");
+        map.put("isdefault","1");*/
+        map.put("payment", "9");
+        map.put("radio_address", "1");
+        map.put("cartinfo", "{\"goods\":{\"39\":1},\"product\":{}}");
+        map.put("delivery_id", "1");
+        map.put("accept_time", "任意");
+        map.put("token", token);
+        Http.doPost(url, map, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+
+                    String json = response.body().string();
+                    Log.i("address", "请求数据成功=======" + json);
+                }
+            }
         });
-    }
-
-    private void hideDelete() {
-        //1.设置状态和文本
-        tvShopcartEdit.setTag(ACTION_EDIT);
-        tvShopcartEdit.setText("编辑");
-        //2.变成非勾选状态
-        if (adapter != null) {
-            adapter.checkAll_no(true);
-            adapter.checkAll();
-            adapter.showTotalPrice();
-        }
-        //3删除视图隐藏
-        llDelete.setVisibility(View.GONE);
-        //4结算视图显示
-        llCheckAll.setVisibility(View.VISIBLE);
-    }
-
-    private void showDelete() {
-        //1.设置状态和文本
-        tvShopcartEdit.setTag(ACTION_COMPLETE);
-        tvShopcartEdit.setText("完成");
-        //2.变成非勾选状态
-        if (adapter != null) {
-            adapter.checkAll_no(false);
-            adapter.checkAll();
-        }
-        //3删除视图显示
-        llDelete.setVisibility(View.VISIBLE);
-        //4结算视图隐藏
-        llCheckAll.setVisibility(View.GONE);
-
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initData();
-       // showData();
-        hideDelete();
+        //initData();
+        //setCartNum();
+
     }
 
+    @OnClick({R.id.tv_title1, R.id.tv_shopcart_edit, R.id.checkbox_all, R.id.tv_shopcart_total, R.id.btn_check_out, R.id.ll_info, R.id.tv_save, R.id.tv_delete, R.id.ll_shar, R.id.ll_cart})
+    public void onClick(View view) {
+        AlertDialog alert;
+        switch (view.getId()) {
+            case R.id.tv_title1:
+                break;
+            case R.id.tv_shopcart_edit:
+                if (flag == 0) {
+                    llInfo.setVisibility(View.GONE);
+                    btnCheckOut.setVisibility(View.GONE);
+                    llShar.setVisibility(View.VISIBLE);
+                    tvShopcartEdit.setText("完成");
+                } else if (flag == 1) {
+                    llInfo.setVisibility(View.VISIBLE);
+                    btnCheckOut.setVisibility(View.VISIBLE);
+                    llShar.setVisibility(View.GONE);
+                    tvShopcartEdit.setText("编辑");
+                }
+                flag = (flag + 1) % 2;//其余得到循环执行上面2个不同的功能
+                break;
 
-    private void emptyShoppingCart() {
-        ll_empty_shopcart.setVisibility(View.VISIBLE);
-        tvShopcartEdit.setVisibility(View.GONE);
-        llDelete.setVisibility(View.GONE);
-    }
+            case R.id.checkbox_all:
+                doCheckAll();
+                break;
+            case R.id.tv_shopcart_total:
+                break;
+            case R.id.btn_check_out:
+                orderHttp();
+                // SubmitOrderHttp();
+                Intent intent = new Intent(mContext, ConfirmOrderActivity.class);
+                //intent.putExtra("goodsbean", goodsBean);
+                intent.putExtra("groups", (Serializable) groups);
+                intent.putExtra("children", (Serializable) children);
+                startActivity(intent);
 
-    // 商户PID
-    // public static final String PARTNER = "2088911876712776";
-    public static final String PARTNER = "2088011085074233";
-    // 商户收款账号
-    // public static final String SELLER = "chenlei@atguigu.com";
-    public static final String SELLER = "917356107@qq.com";
-    // 商户私钥，pkcs8格式
-    //  public static final String RSA_PRIVATE = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAJJlvpnJbOf1UTjIvezfAmTaaz+wqrjuqDuEfmdqD02bcQStpmS23d9LlmPHxumlSGZDSgLhK21ICKbTwA8dteb51FUNIXyrGWOlR2tP+Ggw+IkXlcksLcA6a+wr6BTwa0nGUCGt++66AHm2ShP/Gs5pH+mY4AncvE0wdukSRfx5AgMBAAECgYBEIHj8VBIMN8seY7yOmJEioco7D1nDSbycReIU+fQ5J1cG2FCQmdDScvh/Yp6caEAy5qlwgZyV9GmiSPQdlLPrHlcUaU71zXCL+EHlunzCxOABq5zNIFCInq+vsDRx8OBrRRY1aQe2Z0LayQItk4tjOh10zLva2+VunpzKC8YZSQJBAM5h4IzN3F0prQVxyWmw0m9zqrcFDU67Kwi7MrGPuCIDz1VsIefGfEQ2BMH9r0eVJXAQb0IijcfVpsVDnuC98IsCQQC1mADlXK6wOiO0uEmB7wjbgBRakW7IMmT8TU2Mgja4UzJ5m6ODjRGAVwWzkpiLMZib2QsmgLcxuTerBDX1kEOLAkEAlpb8jkE35hKe2TYpzSDkq8YubtUU3LndsMVHPCCuLsOw6Ze5NbGywuLXneVJnGXLp3WWeR9VbNcMlSu+Jibx+QJBAKORv3zZ9yAVvoPSW6QGQ9wziiHqTfdWLVB18RxXTiLKDfUsFCUytEj+Gcyeh3kZu3TmE/0ig+DuDQ6mRFRlFfECQQCyEcwqbm4hSSMKIhrrbD2HgkPFo8IBVk+eMnfyW1ZajhZjo8XmzaHSNtGYrTvqGUG5oi/4qY6kgezu716yp6HA";
-    public static final String RSA_PRIVATE = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAL51jaxQhxW9PnWpW+nz6yJ76tp9eGFXmfGnuxMK+Pmx/qavdsewXOLBfI2OSCR39TzxwMYvCmUrnrt0fVSa7mblbNos2FnMM9ijnx8bsAAhm+i7BKhuaHMunJKH69L+D753zH3P1YIh0ly5DnAr3WPqHydp384qBvb8NS9Tay0HAgMBAAECgYB82PIVknP6fCMFXg8yPQJViIVa1ASlSpdPIXQv93FdvKABA+QI4kMBIXRUFoCT506KtK55OzzFNOLIXoQJgcXj69z0l6pmjJJgXMaBW/9rOzelot13CiGatrIrGngEZO+bCBTud/jQA598zjZ1g182tT+FLDL7GIftW2hC8GqtAQJBAN+XrYsyfL+uSmLdAVEz1vzziU1naGr10Msm1jMnnO/JYdB+84j7FSHxsQ4YOgsmeN5YVsJcVfc/CReOxknns38CQQDaEHnVPDt+Z7sqT7bN0UKh0/CrqkDTiIjhz1lJyIIoqVRoeJjJn1wlEKBV5R9gkTJutQTVU19XFtblMEnOy6p5AkEAw170rEmMSa0QoHw+d2bVtydR1QnDapqqO6kOx5oYfkm4J4eWYx4J5CQdMpSmuzF9scL85E3sa+NvnV8LEm7cHwJALtXzFPWG4bNt47yTSslzQka/Hl/G5Kginj1mtA44xnr4AihEyKlNpThY95nqj1cgOd7vVtI9W/sv1LH2aFAeIQJBAIqXbMc6xGVfuiFAJKtg+AFNMBP0UOEgMEoKo4RPFp21nBhFgL9/WYM4ZjyHUdr45rCySAqQovw4DCHLfQZC23I=";
-    // 支付宝公钥
-    // public static final String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCSZb6ZyWzn9VE4yL3s3wJk2ms/sKq47qg7hH5nag9Nm3EEraZktt3fS5Zjx8bppUhmQ0oC4SttSAim08APHbXm+dRVDSF8qxljpUdrT/hoMPiJF5XJLC3AOmvsK+gU8GtJxlAhrfvuugB5tkoT/xrOaR/pmOAJ3LxNMHbpEkX8eQIDAQAB";
-    public static final String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+dY2sUIcVvT51qVvp8+sie+rafXhhV5nxp7sTCvj5sf6mr3bHsFziwXyNjkgkd/U88cDGLwplK567dH1Umu5m5WzaLNhZzDPYo58fG7AAIZvouwSobmhzLpySh+vS/g++d8x9z9WCIdJcuQ5wK91j6h8nad/OKgb2/DUvU2stBwIDAQAB";
-    private static final int SDK_PAY_FLAG = 1;
+                break;
+            case R.id.ll_info:
+                break;
+            case R.id.tv_save:
+                break;
+            case R.id.tv_delete:
+                if (totalCount == 0) {
+                    Toast.makeText(mContext, "请选择要移除的商品", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                alert = new AlertDialog.Builder(mContext).create();
+                alert.setTitle("操作提示");
+                alert.setMessage("您确定要将这些商品从购物车中移除吗？");
+                alert.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        });
+                alert.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                doDelete();
+                            }
+                        });
+                alert.show();
 
-    @SuppressLint("HandlerLeak")
-
-    /*
-     * call alipay sdk pay. 调用SDK支付
-     *
-     */
-    public void pay(View v) {
-        if (TextUtils.isEmpty(PARTNER) || TextUtils.isEmpty(RSA_PRIVATE) || TextUtils.isEmpty(SELLER)) {
-            new AlertDialog.Builder(mContext).setTitle("警告").setMessage("需要配置PARTNER | RSA_PRIVATE| SELLER")
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialoginterface, int i) {
-                            //
-                            // finish();
-                        }
-                    }).show();
-            return;
+                break;
+            case R.id.ll_shar:
+                break;
+            case R.id.ll_cart:
+                break;
         }
-        String orderInfo = getOrderInfo("您购买的商品", "该测试商品的详细描述", adapter.getTotalPrice() + "");
-
-        /**
-         * 特别注意，这里的签名逻辑需要放在服务端，切勿将私钥泄露在代码中！
-         */
-        String sign = sign(orderInfo);
-        try {
-            /**
-             * 仅需对sign 做URL编码
-             */
-            sign = URLEncoder.encode(sign, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        /**
-         * 完整的符合支付宝参数规范的订单信息
-         */
-        final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + getSignType();
-
-        Runnable payRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                // 构造PayTask 对象
-                PayTask alipay = new PayTask((Activity) mContext);
-                // 调用支付接口，获取支付结果
-                String result = alipay.pay(payInfo, true);
-
-                Message msg = new Message();
-                msg.what = SDK_PAY_FLAG;
-                msg.obj = result;
-                mHandler.sendMessage(msg);
-            }
-        };
-
-        // 必须异步调用
-        Thread payThread = new Thread(payRunnable);
-        payThread.start();
     }
 
-    private String getOrderInfo(String subject, String body, String price) {
-
-        // 签约合作者身份ID
-        String orderInfo = "partner=" + "\"" + PARTNER + "\"";
-
-        // 签约卖家支付宝账号
-        orderInfo += "&seller_id=" + "\"" + SELLER + "\"";
-
-        // 商户网站唯一订单号
-        orderInfo += "&out_trade_no=" + "\"" + getOutTradeNo() + "\"";
-
-        // 商品名称
-        orderInfo += "&subject=" + "\"" + subject + "\"";
-
-        // 商品详情
-        orderInfo += "&body=" + "\"" + body + "\"";
-
-        // 商品金额
-        orderInfo += "&total_fee=" + "\"" + price + "\"";
-
-        // 服务器异步通知页面路径
-        orderInfo += "&notify_url=" + "\"" + "http://notify.msp.hk/notify.htm" + "\"";
-
-        // 服务接口名称， 固定值
-        orderInfo += "&service=\"mobile.securitypay.pay\"";
-
-        // 支付类型， 固定值
-        orderInfo += "&payment_type=\"1\"";
-
-        // 参数编码， 固定值
-        orderInfo += "&_input_charset=\"utf-8\"";
-
-        // 设置未付款交易的超时时间
-        // 默认30分钟，一旦超时，该笔交易就会自动被关闭。
-        // 取值范围：1m～15d。
-        // m-分钟，h-小时，d-天，1c-当天（无论交易何时创建，都在0点关闭）。
-        // 该参数数值不接受小数点，如1.5h，可转换为90m。
-        orderInfo += "&it_b_pay=\"30m\"";
-
-        // extern_token为经过快登授权获取到的alipay_open_id,带上此参数用户将使用授权的账户进行支付
-        // orderInfo += "&extern_token=" + "\"" + extern_token + "\"";
-
-        // 支付宝处理完请求后，当前页面跳转到商户指定页面的路径，可空
-        orderInfo += "&return_url=\"m.alipay.com\"";
-
-        // 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
-        // orderInfo += "&paymethod=\"expressGateway\"";
-
-        return orderInfo;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter = null;
+        groups.clear();
+        totalPrice = 0;
+        totalCount = 0;
+        children.clear();
     }
-
-    /**
-     * get the out_trade_no for an order. 生成商户订单号，该值在商户端应保持唯一（可自定义格式规范）
-     */
-    private String getOutTradeNo() {
-        SimpleDateFormat format = new SimpleDateFormat("MMddHHmmss", Locale.getDefault());
-        Date date = new Date();
-        String key = format.format(date);
-
-        Random r = new Random();
-        key = key + r.nextInt();
-        key = key.substring(0, 15);
-        return key;
-    }
-
-    /**
-     * sign the order info. 对订单信息进行签名
-     *
-     * @param content 待签名订单信息
-     */
-    private String sign(String content) {
-        return SignUtils.sign(content, RSA_PRIVATE);
-    }
-
-    private String getSignType() {
-        return "sign_type=\"RSA\"";
-    }
-
 }
+
+

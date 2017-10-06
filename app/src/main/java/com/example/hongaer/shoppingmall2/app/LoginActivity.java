@@ -97,7 +97,9 @@ public class LoginActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
             ButterKnife.bind(this);
-            api = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
+            WXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
+            WXapi.registerApp(WX_APP_ID);
+            //api = WXAPIFactory.createWXAPI(this, "wxb4ba3c02aa476ea1");
 
             //  Bmob.initialize(LoginActivity.this,"90d09ab48f73eb4f3c73d5fc44dc001d");//一定要初始化，否则登录会空指针
 
@@ -161,12 +163,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-   /* protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == Constants.REQUEST_LOGIN){
-            Tencent.onActivityResultData(requestCode,resultCode,data,mIUiListener);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }*/
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         CallbackContext.onActivityResult(requestCode, resultCode, data);
@@ -217,6 +214,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }*/
 
+
     private void WXLogin() {
         WXapi = WXAPIFactory.createWXAPI(this, WX_APP_ID, true);
         WXapi.registerApp(WX_APP_ID);
@@ -224,8 +222,10 @@ public class LoginActivity extends AppCompatActivity {
         req.scope = "snsapi_userinfo";
         req.state = "wechat_sdk_demo";
         WXapi.sendReq(req);
+     }
 
-    }
+
+
     public void testWxPay( ) {
         new Thread(new Runnable() {
             public PayReq req;
@@ -306,27 +306,6 @@ public class LoginActivity extends AppCompatActivity {
 
             break;
 
-              /*  BmobUser user=new BmobUser();
-
-                    user.setUsername(username);
-                    user.setPassword(password);
-                    user.login(new SaveListener<BmobUser>() {
-
-                        public void done(BmobUser bmobUser, BmobException e) {
-                            if (e == null) {
-                                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                                           finish();
-                            } else {
-                                //loge(e);
-                                Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-
-                            }
-
-                        }
-                    });
-*/
-               // Toast.makeText(this,"登录",Toast.LENGTH_SHORT).show();
-
             case R.id.tv_login_register:
                  Intent intent=new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
@@ -340,6 +319,8 @@ public class LoginActivity extends AppCompatActivity {
                // Toast.makeText(this,"忘记密码",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ib_weibo:
+                   //showPopWindow();
+                //shareText2WX("你好",2);
                 login(view);
                // testWxPay();
                 // login(view);
@@ -419,7 +400,11 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
 
                                 Log.i("loging66", "登录成功======" +username);
-                            } else {
+                            }
+                            else if(status==0){
+                                Toast.makeText(LoginActivity.this, "此号码已经注册过", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
 
                                 Toast.makeText(LoginActivity.this, "账号或密码有错误", Toast.LENGTH_SHORT).show();
                             }
@@ -462,9 +447,6 @@ public class LoginActivity extends AppCompatActivity {
     }*/
     }
 
-    private void processData(String json) {
-        LoginBean loginBean = JSON.parseObject(json, LoginBean.class);
-        Log.i("tag888","解析成功===+"+loginBean.getStatus());
-    }
+
 
 }

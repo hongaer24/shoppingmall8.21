@@ -55,8 +55,9 @@ public class RegisterActivity extends Activity {
     @BindView(R.id.Message_btn)
     TextView messager_btn;
   //  private String url= Constans.BASE_URL_JQ_MSG+phoneNumber;
-      private  String url=Constans.MSG_URL;
+     public String url=Constans.MSG_URL;
       private String phoneNumber;
+
     private int status;
     // private  String url=Constans.BASE_URL_JQ_MSG+phoneNumber;
 
@@ -96,7 +97,7 @@ public class RegisterActivity extends Activity {
 
                     break;
                 case 0:
-                      Toast.makeText(RegisterActivity.this,"验证码失败",Toast.LENGTH_SHORT).show();
+                      Toast.makeText(RegisterActivity.this,"此号已经注册过",Toast.LENGTH_SHORT).show();
                     break;
 
 
@@ -321,7 +322,8 @@ public class RegisterActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    String msg_data_json = Http.get(url);
+                    String s=url+phoneNumber;
+                    String msg_data_json = Http.get(s);
                     Log.i("msg888999", "请求数据成功=======" + msg_data_json);
                    /* Log.i("url888999", "请求数据成功=======" +phoneNumber);
                     Log.i("url888999", "请求数据成功=======" +url);*/

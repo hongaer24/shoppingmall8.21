@@ -17,9 +17,11 @@ import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.example.hongaer.shoppingmall2.R;
+import com.example.hongaer.shoppingmall2.app.MyApplication;
 import com.example.hongaer.shoppingmall2.user.bean.ProvinceBean;
 import com.example.hongaer.shoppingmall2.user.bean.SPConsigneeAddressBean;
 import com.example.hongaer.shoppingmall2.user.utils.AddressStorage;
+import com.example.hongaer.shoppingmall2.utils.CacheUtils;
 import com.example.hongaer.shoppingmall2.utils.Constans;
 import com.example.hongaer.shoppingmall2.utils.Http;
 import com.example.hongaer.shoppingmall2.utils.SPDialogUtils;
@@ -35,6 +37,9 @@ import java.util.Set;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 //import com.example.hongaer.shoppingmall2.home.bean.consignee;
 
@@ -74,6 +79,10 @@ public class AddressActivity extends AppCompatActivity {
     private static final int MSG_LOAD_FAILED = 0x0003;
     private OptionsPickerView pvOption;
     private SPConsigneeAddressBean consignee;
+    private String province;
+    private String city;
+    private String area;
+    private String token;
 
 
     @Override
@@ -81,6 +90,7 @@ public class AddressActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
         ButterKnife.bind(this);
+         token= CacheUtils.getString(MyApplication.getContex(), "token");
         //  创建选项选择器
         getHttp();
         initData();
@@ -131,21 +141,26 @@ public class AddressActivity extends AppCompatActivity {
             return false;
         }
         consignee.setConsignee(etReceived.getText().toString());
-
+       /////////////
         if (TextUtils.isEmpty(etPhone.getText().toString())) {
             showToast("请输入联系方式");
             return false;
         }
         consignee.setMobile(etPhone.getText().toString());
 
-        //
+        ////////////////
         if (TextUtils.isEmpty(etArea.getText().toString())) {
             showToast("请输入所在地区");
             return false;
         }
         consignee.setFullAddress(etArea.getText().toString());
-
-        //
+        if(province!=null)
+            consignee.setProvince(province);
+        if(city!=null)
+            consignee.setCity(city);
+        if(area!=null)
+            consignee.setDistrict(area);
+        /////////////////
         if (TextUtils.isEmpty(etMoreAddress.getText().toString())) {
             showToast("请输入详细地址");
             return false;
@@ -186,6 +201,13 @@ public class AddressActivity extends AppCompatActivity {
                         + " " + districtList.get(options1).get(options2).get(options3);
                  /* }*/
                 etArea.setText(address);
+
+                province=provinceBeanList.get(options1).getPickerViewText();
+                city=cityList.get(options1).get(options2);
+                area=districtList.get(options1).get(options2).get(options3);
+                /*Log.i("22277","请求数据成功======="+province);
+                Log.i("22277","请求数据成功======="+city);
+                Log.i("22277","请求数据成功======="+area);*/
             }
 
         })
@@ -195,6 +217,8 @@ public class AddressActivity extends AppCompatActivity {
                 .setContentTextSize(25)
                 .build();
         pvOption.setPicker(provinceBeanList, cityList, districtList);
+
+
     }
 
     private void getHttp() {
@@ -212,6 +236,76 @@ public class AddressActivity extends AppCompatActivity {
 
             }
         }).start();
+    }
+    private void addressAddHttp(SPConsigneeAddressBean consignee){
+
+        String url=Constans.ADDRESS_EDIT_URL;
+        Map<String,String> map=new HashMap<>();
+        map.put("id","");
+        map.put("acceptname",consignee.getConsignee());
+        map.put("province","海南");
+        map.put("city","海口");
+        map.put("area","海南");
+        map.put("address","海钓的");
+        map.put("zip","0");
+        map.put("mobile",consignee.getMobile());
+        map.put("is_default",consignee.getIsDefault());
+        map.put("token",token);
+        Log.i("22277","请求数据成功======="+ map);
+        Http.doPost(url, map, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()){
+                    String json=response.body().string();
+                    Log.i("22277","请求数据成功======="+json);
+                }
+
+            }
+        });
+
+
+
+    }
+    private void addressEditHttp(SPConsigneeAddressBean consignee){
+
+        String url=Constans.ADDRESS_EDIT_URL;
+        Map<String,String> map=new HashMap<>();
+        map.put("id",consignee.getAddressID());
+        map.put("acceptname",consignee.getConsignee());
+        map.put("province","海南");
+        map.put("city","海口");
+        map.put("area","海南");
+        map.put("address",consignee.getAddress());
+        map.put("zip","0");
+        map.put("mobile",consignee.getMobile());
+        map.put("is_default",consignee.getIsDefault());
+        map.put("token",token);
+        Log.i("22277","请求数据成功======="+ map);
+        Http.doPost(url, map, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()){
+                    String json=response.body().string();
+                    Log.i("22277","请求数据成功======="+json);
+                }
+
+            }
+        });
+
+
+
     }
 
     public void getJson(String data) {
@@ -263,6 +357,8 @@ public class AddressActivity extends AppCompatActivity {
 
     }
 
+
+
     @OnClick({R.id.ib_goods_back, R.id.et_area, R.id.submit_btn, R.id.consignee_setdefault_sth})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -280,18 +376,23 @@ public class AddressActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.submit_btn:
-                if (!checkData()) {
+                if (checkData()) {
 
-                    return;
-                } else if (getIntent() != null && getIntent().getSerializableExtra("consignee") != null) {
-                    AddressStorage.getInstance().updataData(consignee);
-                } else {
-                    AddressStorage.getInstance().addData(consignee);
+                    if (getIntent() != null && getIntent().getSerializableExtra("consignee") != null) {
+                        addressEditHttp(consignee);
+                        AddressStorage.getInstance().updataData(consignee);
+                        Toast.makeText(AddressActivity.this, "修改地址成功", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        AddressStorage.getInstance().addData(consignee);
+                        Toast.makeText(AddressActivity.this, "添加地址成功", Toast.LENGTH_SHORT).show();
+                       addressAddHttp(consignee);
+
+                    }
+
+                    finish();
+                    break;
                 }
-
-                Log.i("consignee", "======" + consignee);
-                finish();
-                break;
         }
     }
 
@@ -346,6 +447,10 @@ public class AddressActivity extends AppCompatActivity {
         }
     }*/
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
 }
 

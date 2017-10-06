@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 
 import com.example.hongaer.shoppingmall2.R;
@@ -28,6 +29,8 @@ public class GoodsActivity extends AppCompatActivity {
     TabLayout tabTitle;
     @BindView(R.id.view_pager)
     com.example.hongaer.shppingmall2.app.BanViewPager viewPager;
+    @BindView(R.id.exListView)
+    ExpandableListView exListView;
 
 
     private List<FirstPageFragment> mFirstFragments;
@@ -97,13 +100,12 @@ public class GoodsActivity extends AppCompatActivity {
     // 初始化布局
     private void initView() {
         mTablayout = (TabLayout) findViewById(R.id.tab_title);
-        mViewpager = (ViewPager) findViewById(view_pager);
+        mViewpager = (ViewPager) findViewById(R.id.view_pager);
 
         mAdapter_title = new MainTabAdapter(getSupportFragmentManager(), mFirstFragments, mList_title);//设置适配器，即将数据源与适配器绑定
         mViewpager.setAdapter(mAdapter_title);//关联适配器，即将适配器设置到view上
-
+           //exListView.setAdapter(mAdapter_title);
         //  TabLayout 绑定viewpager
-
 
         mTablayout.setupWithViewPager(mViewpager);
 

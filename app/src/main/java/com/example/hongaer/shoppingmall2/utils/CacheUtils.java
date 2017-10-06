@@ -25,5 +25,15 @@ public class CacheUtils {
         SharedPreferences sp=context.getSharedPreferences("hong",Context.MODE_PRIVATE);
         sp.edit().clear().commit();
     }
+    public static void saveInt(Context context, String key,int value) {
+        SharedPreferences sp=context.getSharedPreferences("hong",Context.MODE_PRIVATE);
+        sp.edit().putInt(key,value).commit();
+    }
+
+    public static int getInt(Context mContext, String key) {
+        SharedPreferences sp=mContext.getSharedPreferences("hong", Context.MODE_PRIVATE);
+
+        return sp.getInt(key,0);
+    }
 
 }
