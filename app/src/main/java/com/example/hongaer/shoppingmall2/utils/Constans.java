@@ -58,6 +58,8 @@ public class Constans {
     public static String ADDRESS_DELETE_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=ucenter_app&action=address_del";
     //收货地址接口
     public static String ADDRESS_GET_URL = "http://killsound888.oicp.net:118/jinque/debug/jqmall/index.php?controller=ucenter_app&action=address";
+    //更新版本接口
+     public static String VERSION_URL = BASE_URL+"/index.php?controller=simple_app&action=version";
 
     /**
      * 图片路径

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.baoyz.widget.PullRefreshLayout;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.app.MyApplication;
 import com.example.hongaer.shoppingmall2.base.BaseFragment;
@@ -90,6 +91,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
     Unbinder unbinder;
     @BindView(R.id.layout_cart_empty)
     LinearLayout cart_empty;
+    @BindView(R.id.swipeRefreshLayout)
+    PullRefreshLayout swipeRefreshLayout;
+
     private ShoppingCartAdapter adapter;
     private ResultDataBean.ResultBean resultbean;
     //private RecyclerView recyclerView;
@@ -273,6 +277,18 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
             for (int i = 0; i < adapter.getGroupCount(); i++) {
                 exListView.expandGroup(i);// 关键步骤3,初始化时，将ExpandableListView以展开的方式呈现
             }
+            swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    swipeRefreshLayout.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            initData();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 3000);
+                }
+            });
         }
     }
 
@@ -714,6 +730,9 @@ public class ShoppingCartFragment extends BaseFragment implements View.OnClickLi
         totalCount = 0;
         children.clear();
     }
+
+
+
 }
 
 

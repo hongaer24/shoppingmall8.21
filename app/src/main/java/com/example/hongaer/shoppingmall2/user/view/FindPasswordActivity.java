@@ -85,7 +85,7 @@ public class FindPasswordActivity extends AppCompatActivity {
 
                     break;
                 case 0:
-                    Toast.makeText(FindPasswordActivity.this, "验证码失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FindPasswordActivity.this, "申请验证码时间过短，请稍后尝试", Toast.LENGTH_SHORT).show();
                     break;
 
 

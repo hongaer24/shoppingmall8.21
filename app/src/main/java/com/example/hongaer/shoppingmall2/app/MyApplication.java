@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
 
 /**
@@ -58,25 +59,10 @@ public class MyApplication extends Application {
         /*
            初始化okhttputils
         */
-
         initOkhttpClient();
-      /*  AlibcTradeSDK.asyncInit(this, new AlibcTradeInitCallback() {
-            @Override
-            public void onSuccess() {
-                Map utMap = new HashMap<>();
-                utMap.put("debug_api_url","http://muvp.alibaba-inc.com/online/UploadRecords.do");
-                utMap.put("debug_key","baichuan_sdk_utDetection");
-             UTTeamWork.getInstance().turnOnRealTimeDebug(utMap);
-                AlibcUserTracker.getInstance().sendInitHit4DAU("19","3.1.1.100");
-
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-
-            }
-        });*/
-
+       //初始化jpush
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
         // registToWX();
 
     }
@@ -97,5 +83,9 @@ public class MyApplication extends Application {
 
         OkHttpUtils.initClient(okHttpClient);
     }
+    //设置jpush的debug模式打开
+
+    //jpush的初始化
+
 
 }

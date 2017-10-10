@@ -37,30 +37,31 @@
         android:layout_height="5dp"
         android:background="#eeee" />
          <!--FrameLayou-->
+
         <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
               <!--LinearLayout-->
             <LinearLayout
                 android:id="@+id/ll_cart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                   <!--RecyclerView-->
-               <!-- <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerview"
+                <com.baoyz.widget.PullRefreshLayout
+                    android:id="@+id/swipeRefreshLayout"
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="0dp"
-                    android:background="#eee" />-->
-                <ExpandableListView
-                    android:id="@+id/exListView"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:childIndicator="@null"
-                    android:groupIndicator="@null" >
-                </ExpandableListView>
+                    android:layout_height="450dp">
+                          <ExpandableListView
+                              android:id="@+id/exListView"
+                              android:layout_width="match_parent"
+                              android:layout_height="0dp"
+                              android:layout_weight="1"
+                              android:childIndicator="@null"
+                              android:groupIndicator="@null" />
+
+                       </com.baoyz.widget.PullRefreshLayout>
 
                   <!--LinearLayout(结算)-->
                 <LinearLayout
@@ -113,7 +114,6 @@
                             android:textColor="#fff" />
                     </LinearLayout>
 
-
                   <!--3:LinearLayout(删除)-->
                 <LinearLayout
                 android:id="@+id/ll_shar"
@@ -146,10 +146,10 @@
                     android:text="删除"
                     android:textColor="#FAFAFA"
                     />
-
                </LinearLayout>
-             </LinearLayout>
             </LinearLayout>
+            </LinearLayout>
+
                <!--购车显示布局 empty_cart.xml-->
             <include
                 android:id="@+id/layout_cart_empty"
@@ -157,6 +157,6 @@
                 android:layout_height="match_parent"
                 layout="@layout/cart_empty"
                 android:visibility="gone"/>
+  </FrameLayout>
 
-        </FrameLayout>
 </LinearLayout>

@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
-import com.chanven.lib.cptr.PtrClassicFrameLayout;
+import com.baoyz.widget.PullRefreshLayout;
 import com.example.hongaer.shoppingmall2.R;
 import com.example.hongaer.shoppingmall2.app.MyApplication;
 import com.example.hongaer.shoppingmall2.shoppingcart.view.ConfirmOrderActivity;
@@ -46,11 +46,10 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
     ImageButton ibGoodsBack;
     @BindView(R.id.address_listv)
     ListView addressListv;
-    @BindView(R.id.address_list_pcl)
-    PtrClassicFrameLayout addressListPcl;
     @BindView(R.id.add_address_btn)
     Button addAddressBtn;
-    PtrClassicFrameLayout ptrClassicFrameLayout;
+    @BindView(R.id.swipeRefreshLayout)
+    PullRefreshLayout swipeRefreshLayout;
     //private List<GoodsBean> goodsBeanList;
     private List<SPConsigneeAddressBean> spConsigneeAddressBeanList;
     SPAddressListAdapter mAdapter;
@@ -72,13 +71,18 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
     };
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address_list);
         ButterKnife.bind(this);
         initData();
+
+    }
+
+    public void refresh(){
+
+
 
     }
 
@@ -115,12 +119,12 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
     }
 
     private void processData(String json) {
-        AddressDatasBean addressDatasBean= JSON.parseObject(json,AddressDatasBean.class);
-        addressbean=addressDatasBean.getAddress();
-         if(addressbean!=null&&addressbean.size()>0){
-            for(int i=0;i<addressbean.size();i++){
-                AddressDatasBean.AddressBean addressBean=addressbean.get(i);
-                consignee=new SPConsigneeAddressBean();
+        AddressDatasBean addressDatasBean = JSON.parseObject(json, AddressDatasBean.class);
+        addressbean = addressDatasBean.getAddress();
+        if (addressbean != null && addressbean.size() > 0) {
+            for (int i = 0; i < addressbean.size(); i++) {
+                AddressDatasBean.AddressBean addressBean = addressbean.get(i);
+                consignee = new SPConsigneeAddressBean();
                 consignee.setAddressID(addressBean.getId());
                 consignee.setConsignee(addressBean.getAccept_name());
                 consignee.setMobile(addressBean.getMobile());
@@ -136,16 +140,28 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
             }
 
 
-         }
+        }
 
 
     }
 
     public void showData() {
 
-        spConsigneeAddressBeanList= AddressStorage.getInstance().getAllData();
+        spConsigneeAddressBeanList = AddressStorage.getInstance().getAllData();
         mAdapter = new SPAddressListAdapter(this, this, spConsigneeAddressBeanList);
         addressListv.setAdapter(mAdapter);
+        swipeRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        initData();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },3000);
+            }
+        });
         // ptrClassicFrameLayout.setPtrHandler(new PtrDefaultHandler() {
 
 
@@ -156,13 +172,14 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
         });
         refreshData();*/
     }
-    private void addressDeleteHttp(SPConsigneeAddressBean consignee){
-        String token= CacheUtils.getString(MyApplication.getContex(), "token");
-        String url=Constans.ADDRESS_DELETE_URL;
-        Map<String,String> map=new HashMap<>();
-        map.put("id",consignee.getAddressID());
-        map.put("token",token);
-        Log.i("22266","请求数据成功======="+ map);
+
+    private void addressDeleteHttp(SPConsigneeAddressBean consignee) {
+        String token = CacheUtils.getString(MyApplication.getContex(), "token");
+        String url = Constans.ADDRESS_DELETE_URL;
+        Map<String, String> map = new HashMap<>();
+        map.put("id", consignee.getAddressID());
+        map.put("token", token);
+        Log.i("22266", "请求数据成功=======" + map);
         Http.doPost(url, map, new Callback() {
 
             @Override
@@ -172,14 +189,13 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()){
-                    String json=response.body().string();
-                    Log.i("22266","请求数据成功======="+json);
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    Log.i("22266", "请求数据成功=======" + json);
                 }
 
             }
         });
-
 
 
     }
@@ -256,7 +272,7 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
     }
 
 
-    @OnClick({R.id.ib_goods_back, R.id.address_list_pcl, R.id.add_address_btn})
+    @OnClick({R.id.ib_goods_back, R.id.add_address_btn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ib_goods_back:
@@ -264,12 +280,13 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
                 break;
             case R.id.address_listv:
                 break;
-            case R.id.address_list_pcl:
-                break;
             case R.id.add_address_btn:
                 Intent intent = new Intent(this, AddressActivity.class);
                 startActivity(intent);
                 break;
+
+
+
         }
     }
 
@@ -286,4 +303,6 @@ public class AddressListActivity extends AppCompatActivity implements SPAddressL
     public void showLoadingToast() {
         showLoadingToast();
     }
+
+
 }

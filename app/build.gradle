@@ -11,12 +11,23 @@ android {
 
     }
     defaultConfig {
-        applicationId "com.nbjinque.jqmall"
+        applicationId  "com.nbjinque.jqmall"
+        //applicationId "com.nbjinque.jqmall"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : "com.nbjinque.jqmall",
+                JPUSH_APPKEY : "def49bf4fc2cf06bb321a87d", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
     }
 
     buildTypes {
@@ -113,6 +124,11 @@ dependencies {
     compile 'com.alibaba.mtl:app-monitor-sdk:2.5.1.3_for_bc_proguard@jar'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
     compile 'com.taobao.android:utdid4all:1.1.5.3_proguard@jar'
+    //极光推送sdk
+    compile 'cn.jiguang.sdk:jpush:3.0.9'  // 此处以JPush 3.0.9 版本为例。
+    compile 'cn.jiguang.sdk:jcore:1.1.7'  // 此处以JCore 1.1.7 版本为例。
+    //下拉刷新
+    compile 'com.baoyz.pullrefreshlayout:library:1.2.0'
 
     //compile files('libs/alipaySdk-20170725.jar')
     compile files('src/main/java/libs/alipaySdk-20170725.jar')
